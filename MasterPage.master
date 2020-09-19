@@ -1,0 +1,63 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HRMS</title>
+
+    <link href="Scripts/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+    <script src="Scripts/js/jquery-3.3.1.min.js"></script>
+    <script src="Scripts/js/popper.min.js"></script>
+    <script src="Scripts/js/bootstrap.min.js"></script>
+
+</head>
+<body id="bootstrapovvr" style="padding: 0;">
+    <form runat="server">
+        
+        <header class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" style="padding-left: 20px; padding-right: 20px" href="Home.aspx">HR MANAGEMENT SYSTEM</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">
+                        <asp:HyperLink CssClass="nav-link" ID="HomeHyperLink" runat="server" NavigateUrl="~/Home.aspx">Home</asp:HyperLink>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" runat="server" href="~/About.aspx">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" runat="server" href="~/Contact.aspx">Contact</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav ml-auto" style="padding-right: 20px">
+                    <li class="nav-item">
+                        <asp:HyperLink CssClass="nav-link" runat="server" ID="LoginLogoutHyperLink"></asp:HyperLink></li>
+                    <li class="nav-item">
+                        <asp:Label CssClass="nav-link" Visible="false" runat="server" ID="HiLabel"></asp:Label></li>
+                </ul>
+            </div>
+        </header>
+        <br />
+        <div class="container body-content">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+        </div>
+        <style>
+            #bootstrapovvr .nav-link {
+                color: white;
+            }
+        </style>
+    </form>
+</body>
+</html>
+

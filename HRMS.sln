@@ -3,26 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Test", ".", "{BAC11E52-A9E0-4721-BB14-55DA711BA48F}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "HRMS", ".", "{BAC11E52-A9E0-4721-BB14-55DA711BA48F}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_61802"
-		Debug.AspNetCompiler.PhysicalPath = "..\Test\"
+		Debug.AspNetCompiler.PhysicalPath = "..\HRMS\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61802\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/localhost_61802"
-		Release.AspNetCompiler.PhysicalPath = "..\Test\"
+		Release.AspNetCompiler.PhysicalPath = "..\HRMS\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_61802\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "61802"
-		SlnRelativePath = "..\Test\"
+		SlnRelativePath = "..\HRMS\"
 		DefaultWebSiteLanguage = "Visual C#"
+		StartServerOnDebug = "true"
 	EndProjectSection
 EndProject
 Global

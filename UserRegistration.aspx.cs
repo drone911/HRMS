@@ -57,7 +57,7 @@ public partial class UserRegistration : System.Web.UI.Page
                     string verificationToken = Crypto.GenerateSalt(8);
                     string salt = Crypto.GenerateSalt(16);
 
-                    string tokenisedUrl = ConfigurationManager.AppSettings["domain"] + "VerifyEmail.aspx?token=" + verificationToken;
+                    string tokenisedUrl = ConfigurationManager.AppSettings["domain"] + "VerifyEmail.aspx?token=" + verificationToken + "&email=" +email;
                     String emailBody = "Please follow the link to <a href = \"" + tokenisedUrl + "\">verify your email</a>";
                     
                     // change email body in future
@@ -76,12 +76,8 @@ public partial class UserRegistration : System.Web.UI.Page
                         insertCommand.ExecuteNonQuery();
                         AlertLabel.Visible = true;
                         AlertLabel.Text = "Succesfully Registered, Check you email for verification link, redirecting to login...";
-                        string timeoutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
-                        HtmlMeta oScript = new HtmlMeta();
-                        oScript.Attributes.Add("http-equiv", "REFRESH");
-                        oScript.Attributes.Add("content", "2; url='" + timeoutUrl + "'");
-                        Page.Header.Controls.Add(oScript);
-
+                        string timeOutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
+                        Util.timeoutAndRedirect(Page, timeOutUrl);
                     }
                     catch
                     {

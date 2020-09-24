@@ -1,4 +1,5 @@
-﻿using System;
+﻿using hrms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,34 +10,29 @@ public partial class MasterPage : System.Web.UI.MasterPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        string role = (String)Session["role"];
-        string username = (String)Session["id"];
-        if (role == null)
+        if (Util.IsLoggedIn(Request.Cookies))
         {
-            HomeHyperLink.NavigateUrl = "~/Home.aspx";
+            string username = Request.Cookies["email"].Value.Split('@')[0];
+            string role = Request.Cookies["role"].Value.ToString();
+            // add other navigate URLS
+            if(role == "hr")
+            {
+                HomeHyperLink.NavigateUrl = "~/HRHome.aspx";
+            }
 
-        }
-        else if (role.Equals("HR"))
-        {
-            HomeHyperLink.NavigateUrl = "~/HR_Home.aspx";
-        }
-        else if (role.Equals("Employee"))
-        {
-            HomeHyperLink.NavigateUrl = "~/Employee_Home.aspx";
-        }
-        
-        if (username == null)
-        {
-            LoginLogoutHyperLink.NavigateUrl = "~/Login.aspx";
-            LoginLogoutHyperLink.Text = "Log In";
-            HiLabel.Visible = false;
+            LoginLogoutHyperLink.NavigateUrl = "~/Logout.aspx";
+            LoginLogoutHyperLink.Text = "Log Out";
+            HiLabel.Text = "Hi! " + username;
+            HiLabel.Visible = true;
+            
         }
         else
         {
-            LoginLogoutHyperLink.NavigateUrl = "~/Logout.aspx";
-            LoginLogoutHyperLink.Text = "Log Out";
-            HiLabel.Text = "Hi " + username;
-            HiLabel.Visible = true;
+            HomeHyperLink.NavigateUrl = "~/Home.aspx";
+            LoginLogoutHyperLink.NavigateUrl = "~/Login.aspx";
+            LoginLogoutHyperLink.Text = "Log In";
+            HiLabel.Visible = false;
+
         }
     }
 }

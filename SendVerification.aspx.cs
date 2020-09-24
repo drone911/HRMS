@@ -14,10 +14,12 @@ public partial class SendVerification : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        EmailLabel.Text = "";
+        
     }
     protected void SendVerification_Click(object sender, EventArgs e)
     {
+        EmailLabel.Text = "";
+        RegisterButton.Visible = false;
         SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
         sqlConnection.Open();
 
@@ -36,8 +38,8 @@ public partial class SendVerification : System.Web.UI.Page
                 if ((Boolean)dt.Rows[0]["isEmailVerified"])
                 {
                     EmailLabel.Text = "Email already verified, Redirecting to login page";
-                    EmailLabel.CssClass = "alert alert-success";
-                    Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
+                    EmailLabel.CssClass = "text-success";
+                    Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
                 }
                 else
                 {
@@ -49,18 +51,19 @@ public partial class SendVerification : System.Web.UI.Page
                     String emailBody = "Please follow the link to <a href = \"" + tokenisedUrl + "\">verify your email</a>";
 
                     // change email body in future
-                    Util.sendEmail(email, "Verification mail from HR Management Site", emailBody);
+                    Util.SendEmail(email, "Verification mail from HR Management Site", emailBody);
                     updateVerificationToken.ExecuteNonQuery();
+                    EmailLabel.CssClass = "text-success";
                     EmailLabel.Text = "Successfully send verification email, go check your mail";
-                    Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx", 5);
+                    Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx", 5);
 
                 }
                 }
             else
             {
-                EmailLabel.Text = "Not registered Email, Redirecting to Registration page";
-                EmailLabel.CssClass = "alert alert-danger";
-                Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "UserRegistration.aspx");
+                EmailLabel.Text = "*Not a registered Email";
+                EmailLabel.CssClass = "text-danger";
+                RegisterButton.Visible = true;
             }
         }
         else

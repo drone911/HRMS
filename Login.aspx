@@ -1,72 +1,73 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/MasterPage.master" CodeFile="Login.aspx.cs" Inherits="Login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Login.aspx.cs" Inherits="Login" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="Server">
-    <style type="text/css">
-        .auto-style1 {
-            margin-left: 40px;
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>Registration</title>
+    <link href="Scripts/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="Scripts/js/jquery-3.3.1.min.js"></script>
+    <script src="Scripts/js/popper.min.js"></script>
+    <script src="Scripts/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+    <style>
+        .input-invalid {
+            color: red;
+            font-size: small;
+            padding-left: 2px
         }
 
-        .auto-style2 {
-            margin-left: 80px;
+        #form1 {
+            height: 95vh;
+            padding-top: 13vh;
         }
+        #cardDiv{
+                margin: auto;
+        }
+        
     </style>
-    <div>
-        <br />
-    </div>
-    <p class="MsoNormal">
-        <b style="mso-bidi-font-weight: normal"><span style="font-family: &quot; comic sans ms&quot;">Enter Login Details<o:p>:</o:p></span></b>
-    </p>
+    <form class="" runat="server" id="form1">
 
+        <div id="cardDiv" class="card col-3 ">
+            <article class="card-body">
+                <asp:HyperLink runat="server" NavigateUrl="~/UserRegistration.aspx" CssClass="float-right btn btn-outline-primary">Sign up</asp:HyperLink>
+                <h4 class="card-title mb-4 mt-1">Sign in</h4>
+                <hr />
+                <div class="row w-100">
+                    <asp:Label ID="LoginLabel" CssClass="text-center w-100" runat="server"></asp:Label>
+                </div>
 
+                <div class="form-group">
+                    <label>Your email</label>
+                    <asp:TextBox ID="EmailInput" CssClass="form-control" TextMode="Email" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="EmailValidator" CssClass="input-invalid" runat="server" ControlToValidate="EmailInput" ErrorMessage="*Email Required"></asp:RequiredFieldValidator>
+                </div>
+               <div class="form-group">
+                    <asp:HyperLink runat="server" CssClass="float-right" NavigateUrl="~/ForgotPassword.aspx">Forgot?</asp:HyperLink>
+                    <label>Your password</label>
+                    <asp:TextBox ID="PasswordInput" CssClass="form-control" TextMode="Password" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="PasswordValidator" CssClass="input-invalid" runat="server" ControlToValidate="PasswordInput" ErrorMessage="*Password Required"></asp:RequiredFieldValidator>
 
-    <p>
-        &nbsp;
-    </p>
-    <p style="margin-left: 40px">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </p>
-    <p style="margin-left: 40px">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b style="mso-bidi-font-weight: normal"><span style="font-family: &quot; comic sans ms&quot;">&nbsp;UserName<o:p></o:p></span></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:TextBox ID="TextBox1" runat="server" Height="19px" Width="135px"></asp:TextBox>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="TextBox1" ErrorMessage="Please Enter Username"></asp:RequiredFieldValidator>
-    </p>
-    <div style="margin-left: 40px">
-        <p class="MsoNormal">
-            <b class="auto-style1" style="mso-bidi-font-weight: normal"><span style="font-family: &quot; comic sans ms&quot;">Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></b>
-            <asp:TextBox ID="TextBox2" runat="server" Height="19px" Width="135px"></asp:TextBox>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="TextBox2" ErrorMessage="Please Enter Password"></asp:RequiredFieldValidator>
-        </p>
-        <p class="MsoNormal">
-            &nbsp;
-        </p>
-        &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Login" BackColor="Aqua" BorderColor="#003366" Font-Bold="True" Font-Names="Comic Sans MS" Width="57px" />
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Cancel" BackColor="Aqua" BorderColor="#003366" Font-Bold="True" Font-Names="Comic Sans MS" Width="74px" />
-    </div>
-    <p class="auto-style2">
-        &nbsp;&nbsp;&nbsp;&nbsp;
-    </p>
-    <p style="margin-left: 40px">
-        <asp:GridView ID="GridView1" runat="server" BackColor="White" BorderColor="#3366CC" BorderStyle="None" BorderWidth="1px" CellPadding="4">
-            <FooterStyle BackColor="#99CCCC" ForeColor="#003399" />
-            <HeaderStyle BackColor="#003399" Font-Bold="True" ForeColor="#CCCCFF" />
-            <PagerStyle BackColor="#99CCCC" ForeColor="#003399" HorizontalAlign="Left" />
-            <RowStyle BackColor="White" ForeColor="#003399" />
-            <SelectedRowStyle BackColor="#009999" Font-Bold="True" ForeColor="#CCFF99" />
-            <SortedAscendingCellStyle BackColor="#EDF6F6" />
-            <SortedAscendingHeaderStyle BackColor="#0D4AC4" />
-            <SortedDescendingCellStyle BackColor="#D6DFDF" />
-            <SortedDescendingHeaderStyle BackColor="#002876" />
-        </asp:GridView>
-    </p>
-    <p style="margin-left: 40px">
-        &nbsp;
-    </p>
-    <asp:Label ID="Label1" runat="server"></asp:Label>
-    <p style="margin-left: 40px">
-        &nbsp;
-    </p>
-</asp:Content>
+                </div>
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                            <asp:CheckBox runat="server" ID="SavePasswordCheckbox" />
+                            Save password
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <asp:Button CssClass="btn btn-primary btn-block" ValidationGroup="vg" Text="Login" runat="server" OnClick="LoginButton_Click" />
+                </div>
+            </article>
+        </div>
+    </form>
+</body>
+</html>

@@ -61,7 +61,7 @@ public partial class UserRegistration : System.Web.UI.Page
                     String emailBody = "Please follow the link to <a href = \"" + tokenisedUrl + "\">verify your email</a>";
                     
                     // change email body in future
-                    Util.sendEmail(email, "Verification mail from HR Management Site",emailBody);
+                    Util.SendEmail(email, "Verification mail from HR Management Site",emailBody);
                     SqlCommand insertCommand = new SqlCommand("Insert into [User] values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
                     insertCommand.Parameters.AddWithValue("email", email);
                     insertCommand.Parameters.AddWithValue("firstName", FirstNameInput.Text.Trim().ToLower());
@@ -77,7 +77,7 @@ public partial class UserRegistration : System.Web.UI.Page
                         AlertLabel.Visible = true;
                         AlertLabel.Text = "Succesfully Registered, Check you email for verification link, redirecting to login...";
                         string timeOutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
-                        Util.timeoutAndRedirect(Page, timeOutUrl);
+                        Util.TimeoutAndRedirect(Page, timeOutUrl);
                     }
                     catch
                     {

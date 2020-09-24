@@ -7,23 +7,27 @@
     <title>Send Verification</title>
 
     <link href="Scripts/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-
+    
     <script src="Scripts/js/jquery-3.3.1.min.js"></script>
     <script src="Scripts/js/popper.min.js"></script>
     <script src="Scripts/js/bootstrap.min.js"></script>
 </head>
 <body>
     <form id="form1" runat="server">
-        <div>
-            <asp:Label runat="server">Enter your registered email</asp:Label>
-            <asp:TextBox runat="server" ID="EmailTextBox" ValidationGroup="vg" required></asp:TextBox>
-            <br />
-            <asp:RegularExpressionValidator runat="server" ValidationGroup="vg" ErrorMessage="*Enter a valid email" ControlToValidate="EmailTextBox" ValidationExpression="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" Display="Dynamic"></asp:RegularExpressionValidator>
-            
-            <asp:Label runat="server" ID="EmailLabel"></asp:Label>
-            <br />
-            <asp:Button runat="server" ValidationGroup="vg" Text="Send Email" OnClick="SendVerification_Click" />
+        <div class="w-100" style="height:95vh;">
+            <div class="jumbotron col-8 mx-auto" style="margin-top: 20vh">
+                <h1 class="display-4">Didn't receive an Email?</h1>
+                <hr class="my-4" />
+                <div class="form-group form-inline">
+                    <asp:Label  runat="server" CssClass="pr-2">Enter your registered email</asp:Label>
+                    <asp:TextBox TextMode="Email" CssClass="form-control" runat="server" ID="EmailTextBox" ValidationGroup="vg" required></asp:TextBox>
+                    <asp:Label runat="server" ID="EmailLabel"></asp:Label>
+                </div>
+                <asp:Button runat="server" CssClass="btn btn-primary btn-lg" ValidationGroup="vg" Text="Send Mail" OnClick="SendVerification_Click" />
+                <asp:HyperLink runat="server" ID="RegisterButton" CssClass="btn btn-outline-success btn-lg" Text="Register Here" NavigateUrl="~/UserRegistration.aspx" Visible="false"></asp:HyperLink>
+                <br />
+                <br />
+            </div>
         </div>
     </form>
 </body>

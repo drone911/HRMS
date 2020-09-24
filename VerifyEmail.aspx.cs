@@ -43,20 +43,20 @@ public partial class VerifyEmail : System.Web.UI.Page
                     updateVerified.ExecuteNonQuery();
                     DisplayLabel.Text = "Succesfully Verified, Redirecting to login page";
                     DisplayLabel.CssClass = "alert alert-success";
-                    Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
+                    Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
                 }
                 else
                 {
                     DisplayLabel.Text = "Not able to verify, Redirecting to Email Verification Page";
                     DisplayLabel.CssClass = "alert alert-danger";
-                    Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "SendVerificationAgain.aspx");
+                    Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "SendVerificationAgain.aspx");
                 }
             }
             else
             {
                 DisplayLabel.Text = "Not registered Email, Redirecting to Registration page";
                 DisplayLabel.CssClass = "alert alert-danger";
-                Util.timeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "UserRegistration.aspx");
+                Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "UserRegistration.aspx");
             }
         }
         else

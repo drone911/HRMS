@@ -5,15 +5,40 @@
     <div id="wrapper" class="toggled">
         <!-- Sidebar -->
         <div id="sidebar-wrapper" class="smart-scroll-navbar">
-            <ul class="sidebar-nav bg-dark">
-                <li class="sidebar-brand"><a href="#"></a></li>
-                <li><a href="#"></a></li>
-                <li><a href="#">Shortcuts</a> </li>
-                <li><a href="#">Overview</a> </li>
-                <li><a href="#">Events</a> </li>
-                <li><a href="#">About</a> </li>
-                <li><a href="#">Services</a> </li>
-                <li><a href="#">Contact</a> </li>
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <div id="profilePicWrapper">
+                        <img id="profilePic" src="ProfilePictures/profilePic.png" />
+                    </div>
+                </li>
+                <li><asp:Hyperlink runat="server" id="profileSelection" href="HRProfile.aspx">Profile</asp:Hyperlink> </li>
+                <li>
+                    <asp:Hyperlink runat="server" Cssclass="dropdown-toggle" id="EmployeeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Employee Management</asp:Hyperlink>
+                    <div class="dropdown-menu" aria-labelledby="EmployeeDropdown">
+                        <a class="dropdown-item" href="HRViewEmployees.aspx" runat="server">View Employees</a>
+                        <a class="dropdown-item" href="HRAddEmployee.aspx" runat="server">Add Employee</a>
+                    </div>
+                </li>
+                <li>
+                    <asp:Hyperlink runat="server" Cssclass="dropdown-toggle" id="TrainingDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Training Management</asp:Hyperlink>
+                    <div class="dropdown-menu" aria-labelledby="TrainingDropdown">
+                        <a class="dropdown-item" href="HRViewTrainings.aspx" runat="server">View Trainings</a>
+                        <a class="dropdown-item" href="HRAddTraining.aspx" runat="server">Add Training</a>
+                    </div>
+                </li>
+                <li>
+                    <asp:Hyperlink runat="server" Cssclass="dropdown-toggle" id="JobPostingDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Job Posting Management</asp:Hyperlink>
+                    <div class="dropdown-menu" aria-labelledby="JobPostingDropdown">
+                        <a class="dropdown-item" href="HRViewJobPostings.aspx" runat="server">View Job Postings</a>
+                        <a class="dropdown-item" href="HRAddJobPosting.aspx" runat="server">Add Job Posting</a>
+                    </div>
+                </li>
+                <li>
+                    <asp:Hyperlink runat="server" id="jobpostingsSelection" href="ViewJobPostings.aspx">View All Job Postings</asp:Hyperlink>
+                </li>
+                <li>
+                    <asp:Hyperlink runat="server" id="attendanceSelection" href="HRMarkAttendance.aspx">Mark Attendance</asp:Hyperlink>
+                </li>
             </ul>
         </div>
         <div id="page-content-wrapper">
@@ -21,24 +46,60 @@
             </asp:ContentPlaceHolder>
         </div>
     </div>
-
+    <span runat="server" id="pop" class="popout hide"></span>
+    
     <style>
+
+        /* popout */
+        .popout {
+            position: fixed;
+            right: 25px;
+            bottom: 0px;
+            background-color: black;
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.6rem 3rem;
+            border-radius: 5px;
+            transition: all 0.4s ease-in;
+        }
+        .hide {
+            transform: translateY(+20px);
+            opacity: 0;
+        }
+
+        .show {
+            transform: translateY(-17px);
+            opacity: 1;
+        }
+        /* popout ends */
         body {
             overflow-x: hidden;
         }
-
+        
         #wrapper {
             padding-left: 0;
         }
+        /* side bar */
+        #profilePicWrapper {
+            object-fit: contain;
+            height: 100px;
+            width: 100px;
+        }
+
+        #profilePic {
+            border-radius: 50%;
+            height: 100%;
+            width: 100%;
+        }
 
         #sidebar-wrapper {
-            z-index: 1000;
             position: fixed;
             top: 56px;
             width: 0;
             height: 100%;
             overflow-y: auto;
             background: #000;
+            box-shadow: 0px 0px 6px 1px black
         }
 
         #wrapper.toggled #sidebar-wrapper {
@@ -57,7 +118,7 @@
             position: absolute;
         }
 
-        .sidebar-nav {
+        #bootstrapovvr .sidebar-nav {
             position: absolute;
             top: 0;
             width: 250px;
@@ -66,41 +127,86 @@
             list-style: none;
         }
 
-            .sidebar-nav li {
+            #bootstrapovvr .sidebar-nav li {
                 text-indent: 20px;
-                line-height: 40px;
+                padding: 0;
             }
 
-                .sidebar-nav li a {
+                #bootstrapovvr .sidebar-nav li a {
                     display: block;
                     text-decoration: none;
-                    color: #999999;
+                    color: white;
+                    padding: 1rem;
+                    font-size: 1rem;
                 }
 
-                    .sidebar-nav li a:hover {
-                        text-decoration: none;
-                        color: #fff;
-                        background: rgba(255, 255, 255, 0.2);
-                    }
+        #bootstrapovvr sidebar-nav li a:hover {
+            text-decoration: none;
+        }
 
-                    .sidebar-nav li a:active, .sidebar-nav li a:focus {
-                        text-decoration: none;
-                    }
+        
+        #bootstrapovvr .sidebar-nav li div a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: .5rem;
+            font-size: 1rem;
+        }
 
-            .sidebar-nav > .sidebar-brand {
-                height: 65px;
-                font-size: 18px;
-                line-height: 60px;
+        #bootstrapovvr .dropdown-menu.show {
+            background: #a6a6a6;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            padding: 0;
+            border: 0;
+            left: 30px !important;
+            right: 0px;
+        }
+
+        #bootstrapovvr .sidebar-nav li div a:hover {
+            text-decoration: none;
+            color: black;
+            background: rgba(255, 255, 255, 1);
+        }
+
+        li > a:hover {
+            text-decoration: none;
+            color: black !important;
+            background: white;
+        }
+        #bootstrapovvr a.disabled{
+            color: #666666!important;
+            cursor: no-drop;
+             
+        }
+        .sidebar-nav li a:active, .sidebar-nav li a:focus {
+            text-decoration: none;
+        }
+
+        #bootstrapovvr .sidebar-nav > .sidebar-brand {
+            padding-top: 30px;
+            padding-left: 20px;
+            height: 150px;
+            line-height: 60px;
+        }
+
+        .sidebar-nav > .sidebar-brand a:hover {
+            color: #fff;
+            background: none;
+        }
+
+
+        .dropdown-item {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+            .dropdown-item:first-of-type {
+                border-top-left-radius: 15px;
             }
 
-                .sidebar-nav > .sidebar-brand a {
-                    color: #999999;
-                }
-
-                    .sidebar-nav > .sidebar-brand a:hover {
-                        color: #fff;
-                        background: none;
-                    }
+            .dropdown-item:last-of-type {
+                border-bottom-left-radius: 15px;
+            }
 
         .scrolled-down-navbar {
             transform: translateY(-56px);
@@ -109,13 +215,11 @@
 
         .scrolled-up-navbar {
             transform: translateY(0);
-        
             transition: all 0.4s ease-in-out;
         }
-       
     </style>
     <script>
-        
+
         if ($('.smart-scroll-navbar').length > 0) {
             var last_scroll_top_navbar = 0;
             $(window).on('scroll', function () {
@@ -125,11 +229,19 @@
                 }
                 else {
                     $('.smart-scroll-navbar').removeClass('scrolled-up-navbar').addClass('scrolled-down-navbar');
-                
-                
+
+
                 }
-                last_scroll_top_navbar= scroll_top;
+                last_scroll_top_navbar = scroll_top;
             });
+        }
+        function popout(text, time) {
+            time = Number(time);
+            $(".popout").html(text);
+            $(".popout").removeClass("hide").addClass("show");
+            setTimeout(() => {
+                $(".popout").removeClass("show").addClass("hide");
+            }, time * 1000);
         }
     </script>
 </asp:Content>

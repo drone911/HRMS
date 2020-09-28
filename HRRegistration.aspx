@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/HRHome.master" AutoEventWireup="true" ErrorPage="~/error.aspx" CodeFile="HRRegistration.aspx.cs" Inherits="HRRegistration" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/HRHome.master" AutoEventWireup="true" CodeFile="HRRegistration.aspx.cs" Inherits="HRRegistration" %>
 
-<asp:Content ID="Page" ContentPlaceHolderID="PageContent" runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="PageContent" runat="Server">
     <div>
         <div class="col-12">
             <h2>Need Some More Details!</h2>
@@ -148,7 +148,7 @@
             }
 
         }
-
-
     </script>
+
 </asp:Content>
+

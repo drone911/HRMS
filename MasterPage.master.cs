@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -24,7 +25,6 @@ public partial class MasterPage : System.Web.UI.MasterPage
             LoginLogoutHyperLink.Text = "Log Out";
             HiLabel.Text = "Hi! " + username;
             HiLabel.Visible = true;
-            
         }
         else
         {
@@ -32,7 +32,7 @@ public partial class MasterPage : System.Web.UI.MasterPage
             LoginLogoutHyperLink.NavigateUrl = "~/Login.aspx";
             LoginLogoutHyperLink.Text = "Log In";
             HiLabel.Visible = false;
-
+            
         }
     }
 }

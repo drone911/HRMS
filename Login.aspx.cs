@@ -44,15 +44,43 @@ public partial class Login : System.Web.UI.Page
                         string role = dt.Rows[0]["role"].ToString();
                         Response.Cookies.Set(new HttpCookie("email", email));
                         Response.Cookies.Set(new HttpCookie("role", role));
-
+                        if ((bool)dt.Rows[0]["isFullyRegistered"])
+                        {
+                            Response.Cookies.Set(new HttpCookie("registered", "True"));
+                        }
+                        else
+                        {
+                            Response.Cookies.Set(new HttpCookie("registered", "False"));
+                        }
                         if (SavePasswordCheckbox.Checked)
                         {
                             Response.Cookies["email"].Expires.AddDays(30);
                             Response.Cookies["role"].Expires.AddDays(30);
+                            Response.Cookies["registered"].Expires.AddDays(30);
                         }
+                        
                         if (role == "hr")
                         {
-                            Response.Redirect("~/HRHome.aspx");
+                            if ((bool)dt.Rows[0]["isFullyRegistered"])
+                            {
+                                SqlCommand selectVerification = new SqlCommand("select isVerified from [HR] where email=@email", cn);
+                                selectVerification.Parameters.AddWithValue("email", email);
+                                SqlDataAdapter adapter = new SqlDataAdapter(selectVerification);
+                                DataTable verificationDataTable = new DataTable();
+                                adapter.Fill(verificationDataTable);
+                                Response.Cookies["verified"].Value = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
+                                string uo = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
+                                if (SavePasswordCheckbox.Checked) {
+                                    Response.Cookies["verified"].Expires.AddDays(30);
+                                }
+                                Response.Redirect("~/HRProfile.aspx");
+                                Response.End();
+                            }
+                            else
+                            {
+                                Response.Redirect("~/HRRegistration.aspx");
+                                Response.End();
+                            }
                         }
                     }
                     else

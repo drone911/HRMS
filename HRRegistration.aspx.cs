@@ -26,8 +26,36 @@ public partial class HRRegistration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Util.IsLoggedIn(Request.Cookies))
+        {
+            if (Request.Cookies["registered"].Value == true.ToString())
+            {
+                Response.Redirect("HRProfile.aspx");
+                Response.End();
+            }
+        }
+        else
+        {
+            Response.Redirect("Login.aspx");
+            Response.End();
+        }
+
+
+        DisableMasterNavigationControls();
         EmployementVerificationProofUpload.Attributes["onchange"] = "UploadEmpProof(this)";
         GSTRegistrationCertificateUpload.Attributes["onchange"] = "UploadGSTProof(this)";
+    }
+    private void DisableMasterNavigationControls()
+    {
+
+        ContentPlaceHolder ct = (ContentPlaceHolder)this.Master.Master.FindControl("MainContent");
+        ((WebControl)ct.FindControl("profileSelection")).CssClass += " disabled";
+        ((HyperLink)ct.FindControl("profileSelection")).NavigateUrl += "";
+        ((WebControl)ct.FindControl("EmployeeDropdown")).CssClass += " disabled";
+        ((WebControl)ct.FindControl("JobPostingDropdown")).CssClass += " disabled";
+        ((WebControl)ct.FindControl("attendanceSelection")).CssClass += " disabled";
+        ((HyperLink)ct.FindControl("attendanceSelection")).NavigateUrl += "";
+        ((WebControl)ct.FindControl("TrainingDropdown")).CssClass += " disabled";
     }
     protected void RegisterHRButton_Click(object sender, EventArgs e)
     {
@@ -59,7 +87,7 @@ public partial class HRRegistration : System.Web.UI.Page
         {
             SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
             sqlConnection.Open();
-            SqlCommand insertHr = new SqlCommand("insert into HR values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state)", sqlConnection);
+            SqlCommand insertHr = new SqlCommand("insert into [HR] values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state)", sqlConnection);
             insertHr.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
             insertHr.Parameters.AddWithValue("mobile", MobileNumberInput.Text.Trim());
             insertHr.Parameters.AddWithValue("address", AddressLine1.Text.Trim() + "," + AddressLine2.Text.Trim());
@@ -71,11 +99,15 @@ public partial class HRRegistration : System.Web.UI.Page
             insertHr.Parameters.AddWithValue("city", CityInput.Text);
             insertHr.Parameters.AddWithValue("state", StateInput.Text);
             insertHr.ExecuteNonQuery();
+            SqlCommand updateVerification = new SqlCommand("update [User] set isFullyRegistered=1 where email=@email", sqlConnection);
+            updateVerification.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
+            updateVerification.ExecuteNonQuery();
+            Response.Cookies["registered"].Value = "True";
             Util.CallJavascriptFunction(Page, "popout", new string[] { "Information Updated Successfully", "3" });
-            Util.TimeoutAndRedirect(Page, "~/HRHome.aspx", 3);
+            Util.TimeoutAndRedirect(Page, "HRProfile.aspx", 3);
         }
     }
-    
+
     protected void PincodeInput_TextChanged(object sender, EventArgs e)
     {
 
@@ -100,7 +132,7 @@ public partial class HRRegistration : System.Web.UI.Page
                 }
                 else
                 {
-                    ViewState["pincode"]= null;
+                    ViewState["pincode"] = null;
                 }
             }
         }

@@ -62,7 +62,7 @@ public partial class UserRegistration : System.Web.UI.Page
                     
                     // change email body in future
                     Util.SendEmail(email, "Verification mail from HR Management Site",emailBody);
-                    SqlCommand insertCommand = new SqlCommand("Insert into [User] values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
+                    SqlCommand insertCommand = new SqlCommand("Insert into [User](emailm firstName, lastName, isEmailVerified, verificaticationToken, birthdate, role, hashedPassword, salt) values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
                     insertCommand.Parameters.AddWithValue("email", email);
                     insertCommand.Parameters.AddWithValue("firstName", FirstNameInput.Text.Trim().ToLower());
                     insertCommand.Parameters.AddWithValue("lastName", LastNameInput.Text.Trim().ToLower());

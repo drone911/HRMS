@@ -52,7 +52,6 @@
         <style>
             #bootstrapovvr header{
                 background-color:#2699FB;
-                box-shadow: 
                 
             }
             #bootstrapovvr #navbarNavDropdown{

@@ -87,7 +87,7 @@ public partial class HRRegistration : System.Web.UI.Page
         {
             SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
             sqlConnection.Open();
-            SqlCommand insertHr = new SqlCommand("insert into [HR] values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state)", sqlConnection);
+            SqlCommand insertHr = new SqlCommand("insert into [HR](email, mobileNumber, address, isVerified,qualification, employementVerificationCertificate, GSTRegistrationCertificate, bloodGroup, pincode, city, state) values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state)", sqlConnection);
             insertHr.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
             insertHr.Parameters.AddWithValue("mobile", MobileNumberInput.Text.Trim());
             insertHr.Parameters.AddWithValue("address", AddressLine1.Text.Trim() + "," + AddressLine2.Text.Trim());
@@ -103,8 +103,8 @@ public partial class HRRegistration : System.Web.UI.Page
             updateVerification.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
             updateVerification.ExecuteNonQuery();
             Response.Cookies["registered"].Value = "True";
-            Util.CallJavascriptFunction(Page, "popout", new string[] { "Information Updated Successfully", "3" });
-            Util.TimeoutAndRedirect(Page, "HRProfile.aspx", 3);
+            Util.CallJavascriptFunction(this, "popout", new string[] { "Information Updated Successfully", "3" });
+            Util.TimeoutAndRedirect(this, "HRProfile.aspx", 3);
         }
     }
 

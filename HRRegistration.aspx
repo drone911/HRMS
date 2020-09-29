@@ -95,9 +95,9 @@
             background-color: black;
             color: white;
             font-size: 1.2rem;
-            padding: 0.6rem 3rem;
+            padding: 0.6rem 2.5rem;
             border-radius: 5px;
-            transition: all 0.4s ease-in;
+            transition: all 0.4s cubic-bezier(0.53, 0.01, 0.38, 1.23);
         }
 
         .hide {

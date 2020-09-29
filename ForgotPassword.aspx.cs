@@ -50,7 +50,7 @@ public partial class ForgotPassword : System.Web.UI.Page
                 Util.SendEmail(email, "Change Password", emailBody);
                 string[] javascriptFunctionParam = { "Mail Send", "4" };
                 Util.CallJavascriptFunction(this, "popout", javascriptFunctionParam);
-                //Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
+                Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "Login.aspx");
             }
             else
             {

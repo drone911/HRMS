@@ -10,18 +10,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using hrms;
 
-public class PostOffice
-{
-    public string Name { get; set; }
-    public string District { get; set; }
-    public string State { get; set; }
-}
-public class PostalResponse
-{
-    public string Message { get; set; }
-    public string Status { get; set; }
-    public List<PostOffice> PostOffice;
-}
+
 public partial class HRRegistration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -87,7 +76,7 @@ public partial class HRRegistration : System.Web.UI.Page
         {
             SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
             sqlConnection.Open();
-            SqlCommand insertHr = new SqlCommand("insert into [HR](email, mobileNumber, address, isVerified,qualification, employementVerificationCertificate, GSTRegistrationCertificate, bloodGroup, pincode, city, state) values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state)", sqlConnection);
+            SqlCommand insertHr = new SqlCommand("insert into [HR](email, mobileNumber, address, isVerified,qualification, employementVerificationCertificate, GSTRegistrationCertificate, bloodGroup, pincode, city, state) values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state, @organisationName, @organisationAddress, @organisationPincode, @organisationCity, @organisationState)", sqlConnection);
             insertHr.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
             insertHr.Parameters.AddWithValue("mobile", MobileNumberInput.Text.Trim());
             insertHr.Parameters.AddWithValue("address", AddressLine1.Text.Trim() + "," + AddressLine2.Text.Trim());
@@ -98,6 +87,13 @@ public partial class HRRegistration : System.Web.UI.Page
             insertHr.Parameters.AddWithValue("pincode", ViewState["pincode"].ToString());
             insertHr.Parameters.AddWithValue("city", CityInput.Text);
             insertHr.Parameters.AddWithValue("state", StateInput.Text);
+            insertHr.Parameters.AddWithValue("organisationName", OrganisationNameInput.Text.Trim());
+            insertHr.Parameters.AddWithValue("organisationAddress", OrganisationAddressLine2.Text.Trim() + "," + OrganisationAddressLine2.Text.Trim());
+            insertHr.Parameters.AddWithValue("organisationPincode", ViewState["organisationPincode"].ToString());
+            insertHr.Parameters.AddWithValue("organisationCity", OrganisationCity.Text);
+            insertHr.Parameters.AddWithValue("organisationState", OrganisationState.Text);
+
+
             insertHr.ExecuteNonQuery();
             SqlCommand updateVerification = new SqlCommand("update [User] set isFullyRegistered=1 where email=@email", sqlConnection);
             updateVerification.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
@@ -110,34 +106,32 @@ public partial class HRRegistration : System.Web.UI.Page
 
     protected void PincodeInput_TextChanged(object sender, EventArgs e)
     {
-
-        string Url = "https://api.postalpincode.in/pincode/" + PincodeInput.Text.Trim().ToString();
-
-        using (HttpClient client = new HttpClient())
+        string[] result = Util.getCityAndState(PincodeInput.Text.Trim().ToString());
+        if (result[0] == "Success")
         {
-            var responseTask = client.GetAsync(Url);
-            responseTask.Wait();
-            var result = responseTask.Result;
-            if (result.IsSuccessStatusCode)
-            {
-                var readTask = result.Content.ReadAsAsync<PostalResponse[]>();
-                readTask.Wait();
-                var res = readTask.Result;
-
-                if (res[0].Status == "Success")
-                {
-                    CityInput.Text = res[0].PostOffice[0].District;
-                    StateInput.Text = res[0].PostOffice[0].State;
-                    ViewState["pincode"] = PincodeInput.Text;
-                }
-                else
-                {
-                    ViewState["pincode"] = null;
-                }
-            }
+            CityInput.Text = result[1];
+            StateInput.Text = result[2];
+            ViewState["pincode"] = PincodeInput.Text;
+        }
+        else
+        {
+            ViewState["pincode"] = null;
         }
     }
-
+    protected void OrganisationPincodeInput_TextChanged(object sender, EventArgs e)
+    {
+        string[] result = Util.getCityAndState(PincodeInput.Text.Trim().ToString());
+        if (result[0] == "Success")
+        {
+            OrganisationCity.Text = result[1];
+            OrganisationState.Text = result[2];
+            ViewState["organisationPincode"] = OrganisationPincode.Text;
+        }
+        else
+        {
+            ViewState["organisationPincode"] = null;
+        }
+    }
     protected void EmployementProofButton_Click(object sender, EventArgs e)
     {
         if (EmployementVerificationProofUpload.PostedFile.ContentLength > 0 && EmployementVerificationProofUpload.PostedFile.ContentLength <= 2000000)

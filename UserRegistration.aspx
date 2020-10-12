@@ -31,8 +31,8 @@
                 <label class="col-form-label" for="RoleInput">What role do you want to register for?</label>
                 <asp:DropDownList ID="RoleInput" CssClass="form-control" runat="server" ValidationGroup="vg">
                     <asp:ListItem Enabled="False" Value="-1">Select Role</asp:ListItem>
-                    <asp:ListItem Value="hr">HR</asp:ListItem>
-                    <asp:ListItem Value="recruit">Recruit</asp:ListItem>
+                    <asp:ListItem Value="hr">Human Resource Manager</asp:ListItem>
+                    <asp:ListItem Value="simpleuser">User/Employee</asp:ListItem>
                     <asp:ListItem Value="moderator">Moderator</asp:ListItem>
                 </asp:DropDownList>
             </div>

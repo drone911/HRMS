@@ -20,11 +20,11 @@
 
                 </div>
                 <div class="form-group">
-                    <label class="col-form-label" for="AddressLine1">Organisation Address Line 1</label>
+                    <label class="col-form-label" for="AddressLine1">Address Line 1</label>
                     <asp:TextBox runat="server" CssClass="form-control" ID="AddressLine1" ValidationGroup="vg" required />
                 </div>
                 <div class="form-group">
-                    <label class="col-form-label" for="AddressLine2">Organisation Address Line 2</label>
+                    <label class="col-form-label" for="AddressLine2">Address Line 2</label>
                     <asp:TextBox runat="server" CssClass="form-control" ID="AddressLine2" ValidationGroup="vg" required />
                 </div>
                 <div class="form-group">
@@ -82,6 +82,32 @@
                     </div>
                     <asp:Label ID="GSTRegistrationLabel" runat="server"></asp:Label>
                 </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationNameInput">Organisation Name</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationNameInput" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationAddressLine1">Organisation Address Line 1</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationAddressLine1" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationAddressLine2">Organisation Address Line 2</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationAddressLine2" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationPincode">Organisation Pincode</label>
+                <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationPincode" ValidationGroup="vg2" CausesValidation="true" required AutoPostBack="true" OnTextChanged="OrganisationPincode_TextChanged" />
+                    <asp:RegularExpressionValidator ControlToValidate="OrganisationPincode" ValidationGroup="vg2" ErrorMessage="*Not A Valid Pincode" CssClass="invalid-input" runat="server" ValidationExpression="[1-9]{1}[0-9]{5}$" Display="Dynamic"></asp:RegularExpressionValidator>
+                    </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationCity">Organisation City</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationCity" ValidationGroup="vg" ReadOnly="true" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="OrganisationState">Organisation State</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="OrganisationState" ValidationGroup="vg" ReadOnly="true" required />
+                </div>
+
                 <asp:Button runat="server" CssClass="btn btn-success" ID="RegisterHRButton" CausesValidation="true" Text="Update Information" OnClick="RegisterHRButton_Click" ValidationGroup="vg" />
             </div>
         </div>

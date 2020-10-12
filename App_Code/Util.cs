@@ -6,9 +6,25 @@ using System.Net.Mail;
 using System.Configuration;
 using System.Web.UI.HtmlControls;
 using System.Web.UI;
+using System.Net.Http;
 
 namespace hrms
-{
+{   
+    // helper class
+    public class PostOffice
+    {
+        public string Name { get; set; }
+        public string District { get; set; }
+        public string State { get; set; }
+    }
+    // helper class
+    public class PostalResponse
+    {
+        public string Message { get; set; }
+        public string Status { get; set; }
+        public List<PostOffice> PostOffice;
+    }
+    
     public static class Util
     {
         static public void SendEmail(string to, string subject, string body)
@@ -52,9 +68,18 @@ namespace hrms
             {
                 sb.Append(@"" + "\"" + parameters[i] + "\",");
             }
-            sb.Append(@""+ "\"" +parameters[parameters.Length - 1] + "\");");
+            sb.Append(@"" + "\"" + parameters[parameters.Length - 1] + "\");");
             sb.Append(@"</script>");
             System.Web.UI.ScriptManager.RegisterStartupScript(page, page.GetType(), "JCall1", sb.ToString(), false);
+        }
+
+        public static object GetEmail(HttpRequest request)
+        {
+            return request.Cookies.Get("email").Value.ToString();
+        }
+        public static object GetRole(HttpRequest request)
+        {
+            return request.Cookies.Get("role").Value.ToString();
         }
         static public void CallJavascriptFunction(Page page, string functionName)
         {
@@ -63,6 +88,37 @@ namespace hrms
             sb.Append(@"" + functionName + "();");
             sb.Append(@"</script>");
             System.Web.UI.ScriptManager.RegisterStartupScript(page, page.GetType(), "JCall1", sb.ToString(), false);
+        }
+        // returns string[0] is status, string[1] is city, string[2] is state
+        static public string[] getCityAndState(string pincode)
+        {
+            string[] toReturn = new string[3];
+            string Url = "https://api.postalpincode.in/pincode/" + pincode;
+
+            using (HttpClient client = new HttpClient())
+            {
+                var responseTask = client.GetAsync(Url);
+                responseTask.Wait();
+                var result = responseTask.Result;
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<PostalResponse[]>();
+                    readTask.Wait();
+                    var res = readTask.Result;
+
+                    if (res[0].Status == "Success")
+                    {
+                        toReturn[0] = "Success";
+                        toReturn[1] = res[0].PostOffice[0].District;
+                        toReturn[2] = res[0].PostOffice[0].State;
+                    }
+                    else
+                    {
+                        toReturn[0] = "Failure";
+                    }
+                }
+            }
+            return toReturn;
         }
     }
 }

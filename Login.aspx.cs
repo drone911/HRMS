@@ -69,7 +69,7 @@ public partial class Login : System.Web.UI.Page
                                 DataTable verificationDataTable = new DataTable();
                                 adapter.Fill(verificationDataTable);
                                 Response.Cookies["verified"].Value = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
-                                string uo = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
+                                // string uo = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
                                 if (SavePasswordCheckbox.Checked) {
                                     Response.Cookies["verified"].Expires.AddDays(30);
                                 }
@@ -81,6 +81,10 @@ public partial class Login : System.Web.UI.Page
                                 Response.Redirect("~/HRRegistration.aspx");
                                 Response.End();
                             }
+                        }
+                        if(role == "simpleuser")
+                        {
+
                         }
                     }
                     else

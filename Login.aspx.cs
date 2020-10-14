@@ -18,7 +18,10 @@ public partial class Login : System.Web.UI.Page
         cn = new SqlConnection();
         cn.ConnectionString = ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ToString();
         cn.Open();
-
+        HttpCookie emailCookie = new HttpCookie("email", "");
+        Response.Cookies["role"].Value = "";
+        Response.Cookies["registered"].Value = "";
+        Response.Cookies["verified"].Value = "";
     }
     protected void LoginButton_Click(object sender, EventArgs e)
     {
@@ -42,15 +45,15 @@ public partial class Login : System.Web.UI.Page
                     if ((bool)dt.Rows[0]["isEmailVerified"])
                     {
                         string role = dt.Rows[0]["role"].ToString();
-                        Response.Cookies.Set(new HttpCookie("email", email));
-                        Response.Cookies.Set(new HttpCookie("role", role));
+                        Response.Cookies.Add(new HttpCookie("email", email));
+                        Response.Cookies.Add(new HttpCookie("role", role));
                         if ((bool)dt.Rows[0]["isFullyRegistered"])
                         {
-                            Response.Cookies.Set(new HttpCookie("registered", "True"));
+                            Response.Cookies.Add(new HttpCookie("registered", "True"));
                         }
                         else
                         {
-                            Response.Cookies.Set(new HttpCookie("registered", "False"));
+                            Response.Cookies.Add(new HttpCookie("registered", "False"));
                         }
                         if (SavePasswordCheckbox.Checked)
                         {
@@ -59,6 +62,7 @@ public partial class Login : System.Web.UI.Page
                             Response.Cookies["registered"].Expires.AddDays(30);
                         }
                         
+
                         if (role == "hr")
                         {
                             if ((bool)dt.Rows[0]["isFullyRegistered"])
@@ -68,7 +72,7 @@ public partial class Login : System.Web.UI.Page
                                 SqlDataAdapter adapter = new SqlDataAdapter(selectVerification);
                                 DataTable verificationDataTable = new DataTable();
                                 adapter.Fill(verificationDataTable);
-                                Response.Cookies["verified"].Value = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
+                                Response.Cookies.Add(new HttpCookie("verified", ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString()));
                                 // string uo = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
                                 if (SavePasswordCheckbox.Checked) {
                                     Response.Cookies["verified"].Expires.AddDays(30);
@@ -84,6 +88,7 @@ public partial class Login : System.Web.UI.Page
                         }
                         if(role == "simpleuser")
                         {
+                            Response.Redirect("~/UserProfile.aspx");
 
                         }
                     }

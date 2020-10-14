@@ -15,21 +15,6 @@ public partial class HRRegistration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Util.IsLoggedIn(Request.Cookies))
-        {
-            if (Request.Cookies["registered"].Value == true.ToString())
-            {
-                Response.Redirect("HRProfile.aspx");
-                Response.End();
-            }
-        }
-        else
-        {
-            Response.Redirect("Login.aspx");
-            Response.End();
-        }
-
-
         DisableMasterNavigationControls();
         EmployementVerificationProofUpload.Attributes["onchange"] = "UploadEmpProof(this)";
         GSTRegistrationCertificateUpload.Attributes["onchange"] = "UploadGSTProof(this)";
@@ -66,8 +51,14 @@ public partial class HRRegistration : System.Web.UI.Page
             PincodeLabel.Text = "Not a valid pincode";
             PincodeLabel.CssClass = "invalid-input";
             flag = true;
-
         }
+        if (ViewState["organisationPincode"].ToString() == null)
+        {
+            OrganisationPincode.Text = "Not a valid pincode";
+            OrganisationPincode.CssClass = "invalid-input";
+            flag = true;
+        }
+
         if (flag)
         {
             return;
@@ -76,7 +67,7 @@ public partial class HRRegistration : System.Web.UI.Page
         {
             SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
             sqlConnection.Open();
-            SqlCommand insertHr = new SqlCommand("insert into [HR](email, mobileNumber, address, isVerified,qualification, employementVerificationCertificate, GSTRegistrationCertificate, bloodGroup, pincode, city, state) values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state, @organisationName, @organisationAddress, @organisationPincode, @organisationCity, @organisationState)", sqlConnection);
+            SqlCommand insertHr = new SqlCommand("insert into [HR](email, mobileNumber, address, isVerified,qualification, employementVerificationCertificate, GSTRegistrationCertificate, bloodGroup, pincode, city, state, organisationName, organisationAddress, organisationPincode, organisationCity, organisationState) values(@email, @mobile, @address, 0, @qualification, @employementVerificationCertificate, @GSTRegistrationCertificate, @bloodGroup, @pincode,@city, @state, @organisationName, @organisationAddress, @organisationPincode, @organisationCity, @organisationState)", sqlConnection);
             insertHr.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
             insertHr.Parameters.AddWithValue("mobile", MobileNumberInput.Text.Trim());
             insertHr.Parameters.AddWithValue("address", AddressLine1.Text.Trim() + "," + AddressLine2.Text.Trim());
@@ -96,9 +87,10 @@ public partial class HRRegistration : System.Web.UI.Page
 
             insertHr.ExecuteNonQuery();
             SqlCommand updateVerification = new SqlCommand("update [User] set isFullyRegistered=1 where email=@email", sqlConnection);
-            updateVerification.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
+            updateVerification.Parameters.AddWithValue("email", Util.GetEmail(Request));
             updateVerification.ExecuteNonQuery();
             Response.Cookies["registered"].Value = "True";
+            Response.Cookies["registered"].Expires.AddDays(30);
             Util.CallJavascriptFunction(this, "popout", new string[] { "Information Updated Successfully", "3" });
             Util.TimeoutAndRedirect(this, "HRProfile.aspx", 3);
         }
@@ -118,7 +110,7 @@ public partial class HRRegistration : System.Web.UI.Page
             ViewState["pincode"] = null;
         }
     }
-    protected void OrganisationPincodeInput_TextChanged(object sender, EventArgs e)
+    protected void OrganisationPincode_TextChanged(object sender, EventArgs e)
     {
         string[] result = Util.getCityAndState(PincodeInput.Text.Trim().ToString());
         if (result[0] == "Success")
@@ -148,7 +140,7 @@ public partial class HRRegistration : System.Web.UI.Page
                     extension = ".pdf";
                 }
                 string fileName = Request.Cookies["email"].Value.Replace('.', '_') + "_EmployementVerificationCertificate";
-                string file = Server.MapPath("~/Uploads/" + fileName);
+                string file = Server.MapPath("~/Uploads/hr/" + fileName);
                 if (File.Exists(file + ".pdf"))
                 {
                     File.Delete(file + ".pdf");
@@ -194,7 +186,7 @@ public partial class HRRegistration : System.Web.UI.Page
                     extension = ".pdf";
                 }
                 string fileName = Request.Cookies.Get("email").Value.Replace('.', '_') + "_GSTRegistrationCertificate";
-                string file = Server.MapPath("~/Uploads/" + fileName);
+                string file = Server.MapPath("~/Uploads/hr/" + fileName);
                 if (File.Exists(file + ".pdf"))
                 {
                     File.Delete(file + ".pdf");

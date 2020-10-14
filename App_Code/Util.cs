@@ -73,11 +73,11 @@ namespace hrms
             System.Web.UI.ScriptManager.RegisterStartupScript(page, page.GetType(), "JCall1", sb.ToString(), false);
         }
 
-        public static object GetEmail(HttpRequest request)
+        public static string GetEmail(HttpRequest request)
         {
             return request.Cookies.Get("email").Value.ToString();
         }
-        public static object GetRole(HttpRequest request)
+        public static string GetRole(HttpRequest request)
         {
             return request.Cookies.Get("role").Value.ToString();
         }

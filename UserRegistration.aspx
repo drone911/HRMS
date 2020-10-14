@@ -1,86 +1,108 @@
-﻿<%@ Page Language="C#" AutoEventWireup="false" CodeFile="UserRegistration.aspx.cs" Inherits="UserRegistration" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/UserHome.master" AutoEventWireup="true" CodeFile="UserRegistration.aspx.cs" Inherits="UserRegistration" %>
 
-<!DOCTYPE html>
+<asp:Content ID="Content1" ContentPlaceHolderID="PageContent" Runat="Server">
+    <div>
+        <div class="col-12">
+            <h2>Need Some More Details!</h2>
+            <hr style="border-top: 3px solid rgba(0, 0, 0, 0.5)" />
+        </div>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>Registration</title>
-    <link href="Scripts/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+        <div class="row">
+            <div class="mx-auto col-5">
+                <div>
+                    <asp:Label ID="AlertLabel" runat="Server" CssClass="row alert alert-primary" Visible="false" role="alert"></asp:Label>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="MobileNumberInput">Mobile Number</label>
+                    <asp:TextBox runat="server" TextMode="Phone" CssClass="form-control" ID="MobileNumberInput" ValidationGroup="vg" required />
+                    <asp:RegularExpressionValidator runat="server" CssClass="invalid-input" ErrorMessage="*Enter a valid number" ControlToValidate="MobileNumberInput" ValidationExpression="^[0-9]{10}$" ValidationGroup="vg"></asp:RegularExpressionValidator>
 
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="Scripts/js/jquery-3.3.1.min.js"></script>
-    <script src="Scripts/js/popper.min.js"></script>
-    <script src="Scripts/js/bootstrap.min.js"></script>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="AddressLine1">Address Line 1</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="AddressLine1" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="AddressLine2">Address Line 2</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="AddressLine2" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="PincodeInput">Pincode</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="PincodeInput" ValidationGroup="vg1" CausesValidation="true" required AutoPostBack="true" OnTextChanged="PincodeInput_TextChanged" />
+                    <asp:RegularExpressionValidator ControlToValidate="PincodeInput" ValidationGroup="vg1" ErrorMessage="*Not A Valid Pincode" CssClass="invalid-input" runat="server" ValidationExpression="[1-9]{1}[0-9]{5}$" Display="Dynamic"></asp:RegularExpressionValidator>
+                    <asp:Label ID="PincodeLabel" runat="server"></asp:Label>
+                </div>
 
-</head>
-<body style="padding: 10px">
+                <div class="form-group">
+                    <label class="col-form-label" for="CityInput">City</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="CityInput" ReadOnly="true" ValidationGroup="vg" required />
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" for="StateInput">State</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="StateInput" ValidationGroup="vg" required ReadOnly="True" />
+                </div>
+            </div>
+            <div class="mx-auto col-5">
+                <div class="form-group">
+                    <label class="col-form-label" for="BloodGroupInput">Blood Group</label>
+                    <asp:DropDownList CssClass="form-control" runat="server" ValidationGroup="vg" ID="BloodGroupInput">
+                        <asp:ListItem Text="Select Blood Group.." Value="-1"></asp:ListItem>
+                        <asp:ListItem Text="O+" Value="O+"></asp:ListItem>
+                        <asp:ListItem Text="O-" Value="O-"></asp:ListItem>
+                        <asp:ListItem Text="A+" Value="A+"></asp:ListItem>
+                        <asp:ListItem Text="A-" Value="A-"></asp:ListItem>
+                        <asp:ListItem Text="B+" Value="B+"></asp:ListItem>
+                        <asp:ListItem Text="B-" Value="B-"></asp:ListItem>
+                        <asp:ListItem Text="AB+" Value="AB+"></asp:ListItem>
+                        <asp:ListItem Text="AB-" Value="AB-"></asp:ListItem>
+                    </asp:DropDownList>
+                    <asp:CompareValidator runat="server" CssClass="invalid-input" ErrorMessage="*Select An Option" ControlToValidate="BloodGroupInput" Display="Dynamic" ValidationGroup="vg" ValueToCompare="-1" Operator="NotEqual"></asp:CompareValidator>
+                </div>
+                <!-- make it a dropdown list -->
+                <div class="form-group">
+                    <label class="col-form-label" for="QualificationInput">Qualification</label>
+                    <asp:TextBox runat="server" CssClass="form-control" ID="QualificationInput" ValidationGroup="vg" required />
+                </div>
+                <label class="col-form-label" for="ResumeUpload">Upload Resume</label>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <asp:FileUpload CssClass="custom-file-input" runat="server" AllowMultiple="false" ID="ResumeUpload" />
+                        <asp:Label runat="server" CssClass="custom-file-label" ID="customResumeFileLabel" for="ResumeUpload">Choose file</asp:Label>
+                        <asp:Button ID="ResumeButton" Text="Upload" runat="server" OnClick="ResumeButton_Click" UseSubmitBehavior="false" CausesValidation="false" Style="display: none" />
+                    </div>
+                    <asp:Label ID="ResumeLabel" runat="server"></asp:Label>
+                </div>
+                
+                <asp:Button runat="server" CssClass="btn btn-success" ID="RegisterUserButton" CausesValidation="true" Text="Update Information" OnClick="RegisterUserButton_Click" ValidationGroup="vg" />
+            </div>
+        </div>
+    </div>
+    <span runat="server" id="pop" class="popout hide"></span>
     <style>
+       
         .invalid-input {
             color: red;
             font-size: small;
             padding-left: 2px
         }
+
+        .valid-input {
+            color: green;
+            font-size: small;
+            padding-left: 2px
+        }
     </style>
-    <div class="container col-8 align-content-center">
-        <form id="form1" runat="server">
-                <div><asp:Label ID="AlertLabel" runat="Server"  CssClass="row alert alert-primary" Visible="false" role="alert"></asp:Label></div>
-            <div class="form-group form-row">
-                
-                <label class="col-form-label" for="RoleInput">What role do you want to register for?</label>
-                <asp:DropDownList ID="RoleInput" CssClass="form-control" runat="server" ValidationGroup="vg">
-                    <asp:ListItem Enabled="False" Value="-1">Select Role</asp:ListItem>
-                    <asp:ListItem Value="hr">Human Resource Manager</asp:ListItem>
-                    <asp:ListItem Value="simpleuser">User/Employee</asp:ListItem>
-                    <asp:ListItem Value="moderator">Moderator</asp:ListItem>
-                </asp:DropDownList>
-            </div>
-            <div class="form-group form-row">
-                <label class="col-form-label" for="FirstNameInput">First Name</label>
-                <asp:TextBox runat="server" type="text" CssClass="form-control" ID="FirstNameInput" ValidationGroup="vg" required />
-                <asp:RegularExpressionValidator runat="server" CssClass="invalid-input" ErrorMessage="*Invalid Input" ControlToValidate="FirstNameInput" ValidationExpression="^[a-zA-Z]+$" ValidationGroup="vg"></asp:RegularExpressionValidator>
-            </div>
-
-            <div class="form-group form-row">
-                <label class="col-form-label" for="LastNameInput">Last Name</label>
-                <asp:TextBox runat="server" type="textt" CssClass="form-control" ID="LastNameInput" ValidationGroup="vg" required />
-                <asp:RegularExpressionValidator runat="server" CssClass="invalid-feedback" ErrorMessage="*Invalid Input" ControlToValidate="LastNameInput" ValidationExpression="^[a-zA-Z]+$" ValidationGroup="vg" Display="Dynamic"></asp:RegularExpressionValidator>
-
-            </div>
-            <div class="form-group form-row">
-                <label class="col-form-label" for="EmailInput">Email</label>
-                <asp:TextBox runat="server" type="email" CssClass="form-control" ID="EmailInput" required ValidationGroup="vg" />
-                <asp:Label ID="EmailLabel" runat="server" CssClass="invalid-input"></asp:Label>
-                <asp:RegularExpressionValidator runat="server" ErrorMessage="*Enter a valid email" CssClass="invalid-input" ValidationGroup="vg" ValidationExpression="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?" ControlToValidate="EmailInput" Display="Dynamic"></asp:RegularExpressionValidator>
-            </div>
-            <div class="form-group form-row">
-                <label class="col-form-label" for="PasswordInput">Password</label>
-                <asp:TextBox runat="server" type="password" required CssClass="form-control" ID="PasswordInput" ValidationGroup="vg" />
-                <asp:RegularExpressionValidator runat="server" ControlToValidate="PasswordInput" ValidationGroup="vg" ValidationExpression="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" Display="Dynamic" ErrorMessage="*Invalid, must include one uppercase, one lowercase, one number and minimum lenght of 8 character" CssClass="invalid-input"></asp:RegularExpressionValidator>
-            </div>
-            <div class="form-group form-row">
-                <label class="col-form-label" for="ConfirmPasswordInput">Confirm Password</label>
-                <asp:TextBox runat="server" type="password" required CssClass="form-control" ID="ConfirmPasswordInput" />
-                <asp:RegularExpressionValidator runat="server" ControlToValidate="ConfirmPasswordInput" ValidationGroup="vg" ValidationExpression="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$" Display="Dynamic" ErrorMessage="*Invalid, must include one uppercase, one lowercase, one number and minimum lenght of 8 character" CssClass="invalid-input" Width="100%"></asp:RegularExpressionValidator>
-
-                <asp:CompareValidator runat="server" ControlToCompare="PasswordInput" ControlToValidate="ConfirmPasswordInput" ValidationGroup="vg" Display="Dynamic" ErrorMessage="*Passwords do not compare" CssClass="invalid-input"></asp:CompareValidator>
-            </div>
-            <div class="form-group">
-                <label for="FlatpickrCalender" style="padding-bottom: 5px; width: 100vw">Birthday</label>
-                <asp:TextBox runat="server" ValidationGroup="vg" ID="FlatpickrCalender" required Text="Select Date" class="form-control" type="text" placeholder="Select Date.."  />
-                <asp:Label ID="BirthdayLabel" runat="server" CssClass="invalid-input"></asp:Label>
-                <asp:CompareValidator runat="server" ControlToValidate="FlatpickrCalender" CssClass="invalid-input" ErrorMessage="*Select a date" Font-Strikeout="False" Display="Dynamic" ValidationGroup="vg" ValueToCompare="Select Date" Operator="NotEqual"></asp:CompareValidator>
-            </div>
-            <asp:Button runat="server" CssClass="btn btn-success" ID="RegisterButton" Text="Register" OnClick="RegisterButton_Click" ValidationGroup="vg" />
-        </form>
-    </div>
     <script>
-        flatpickr("#FlatpickrCalender", {
-            altInput: true,
-            altFormat: "F j, Y",
-            dateFormat: "Y-m-d",
-        });
+       
+        function UploadResume(fileUpload) {
+            if (fileUpload.value != '') {
+                var fileName = fileUpload.value.split("\\").pop();
+                document.getElementById("<%=ResumeButton.ClientID %>").click();
+                $("#customResumeFileLabel").addClass("selected").html(fileName);
+            }
+
+        }
     </script>
-</body>
-</html>
+
+</asp:Content>
+

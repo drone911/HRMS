@@ -8,7 +8,7 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <div id="profilePicWrapper">
-                        <img id="profilePic" src="ProfilePictures/profilePic.png" />
+                        <img id="profilePic" src="Uploads/ProfilePictures/profilePic.png" />
                     </div>
                 </li>
                 <li><asp:Hyperlink runat="server" id="profileSelection" href="HRProfile.aspx">Profile</asp:Hyperlink> </li>

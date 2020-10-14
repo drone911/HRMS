@@ -1,0 +1,1 @@
+﻿Select u.firstName as 'First Name', u.lastName as 'Last Name', e.organisationRole as Position, e.email as EmailAddress from [Employee] as [e], [User] as [u] where [e].[to] IS NULL and [e].[isVerified]=1 and [e].[email]=[u].[email] and [u].role='simpleuser' and [e].[employedHREmail]='jigar1822@gmail.com' order by [e].[heirarchy] ASC

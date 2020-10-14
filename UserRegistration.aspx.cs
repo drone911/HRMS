@@ -1,95 +1,124 @@
-﻿using System;
+﻿using hrms;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Configuration;
-using System.Data.SqlClient;
-using System.Data;
-using System.Web.Helpers;
-using hrms;
-using System.Web.UI.HtmlControls;
 
 public partial class UserRegistration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        
-        EmailLabel.Text = "";
-        BirthdayLabel.Text = "";
-        AlertLabel.Visible = false;
-
+       ResumeUpload.Attributes["onchange"] = "UploadResume(this)";
     }
-
-    protected void RegisterButton_Click(object sender, EventArgs e)
+    protected void RegisterUserButton_Click(object sender, EventArgs e)
     {
-        EmailLabel.Text = "";
-        BirthdayLabel.Text = "";
-        AlertLabel.Visible = false;
-
-        String email = EmailInput.Text.Trim().ToLower();
-        String dbcstring = ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString;
-        SqlConnection sqlConnection = new SqlConnection(dbcstring);
-        sqlConnection.Open();
-        if (sqlConnection.State.ToString() == "Open")
+        bool flag = false;
+        if (ViewState["resume"].ToString() == null)
         {
-            SqlCommand sqlCommand = new SqlCommand("select email from [User] where email=@email", sqlConnection);
-
-            sqlCommand.Parameters.Add(new SqlParameter("email", email));
-            SqlDataAdapter dataAdapter = new SqlDataAdapter(sqlCommand);
-            DataTable ds = new DataTable();
-            dataAdapter.Fill(ds);
-            if (ds.Rows.Count> 0)
+            ResumeLabel.Text = "*Upload the required file";
+            ResumeLabel.CssClass = "invalid-input";
+            flag = true;
+        }
+        if (ViewState["pincode"].ToString() == null)
+        {
+            PincodeLabel.Text = "Not a valid pincode";
+            PincodeLabel.CssClass = "invalid-input";
+            flag = true;
+        }
+        if (flag)
+        {
+            return;
+        }
+        else
+        {
+            SqlConnection sqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
+            sqlConnection.Open();
+            
+            SqlCommand insertSimpleUser = new SqlCommand("insert into [SimpleUser](email, mobileNumber, address, qualification, resume, bloodGroup, pincode, city, state) values(@email, @mobile, @address, @qualification, @resume, @bloodGroup, @pincode,@city, @state)", sqlConnection);
+            insertSimpleUser.Parameters.AddWithValue("email", Request.Cookies["email"].Value);
+            insertSimpleUser.Parameters.AddWithValue("mobile", MobileNumberInput.Text.Trim());
+            insertSimpleUser.Parameters.AddWithValue("address", AddressLine1.Text.Trim() + "," + AddressLine2.Text.Trim());
+            insertSimpleUser.Parameters.AddWithValue("qualification", QualificationInput.Text.Trim());
+            insertSimpleUser.Parameters.AddWithValue("resume", ViewState["resume"].ToString());
+            insertSimpleUser.Parameters.AddWithValue("bloodGroup", BloodGroupInput.SelectedItem.Value);
+            insertSimpleUser.Parameters.AddWithValue("pincode", ViewState["pincode"].ToString());
+            insertSimpleUser.Parameters.AddWithValue("city", CityInput.Text);
+            insertSimpleUser.Parameters.AddWithValue("state", StateInput.Text);
+            insertSimpleUser.ExecuteNonQuery();
+            
+            SqlCommand updateVerification = new SqlCommand("update [User] set isFullyRegistered=1 where email=@email", sqlConnection);
+            updateVerification.Parameters.AddWithValue("email", Util.GetEmail(Request));
+            updateVerification.ExecuteNonQuery();
+            Response.Cookies["registered"].Value = "True";
+            Response.Cookies["registered"].Expires.AddDays(30);
+            
+            Util.CallJavascriptFunction(this, "popout", new string[] { "Information Updated Successfully", "3" });
+            Util.TimeoutAndRedirect(this, "UserProfile.aspx", 3);
+        }
+    }
+    protected void PincodeInput_TextChanged(object sender, EventArgs e)
+    {
+        string[] result = Util.getCityAndState(PincodeInput.Text.Trim().ToString());
+        if (result[0] == "Success")
+        {
+            CityInput.Text = result[1];
+            StateInput.Text = result[2];
+            ViewState["pincode"] = PincodeInput.Text;
+        }
+        else
+        {
+            ViewState["pincode"] = null;
+        }
+    }
+    protected void ResumeButton_Click(object sender, EventArgs e)
+    {
+        if (ResumeUpload.PostedFile.ContentLength > 0 && ResumeUpload.PostedFile.ContentLength <= 2000000)
+        {
+            if (ResumeUpload.PostedFile.ContentType == "image/jpeg" || ResumeUpload.PostedFile.ContentType == "application/pdf")
             {
-                EmailLabel.Text = "**Email already register, please register a from different email address.";
-            }
-            else
-            {
-                String[] date= FlatpickrCalender.Text.Split('-');
-                var birthdate = new DateTime(Convert.ToInt32(date[0]), Convert.ToInt32(date[1]), Convert.ToInt32(date[2]));
-                if (DateTime.Now.Year - birthdate.Year < 18)
+                string extension;
+                if (ResumeUpload.PostedFile.ContentType == "image/jpeg")
                 {
-                    BirthdayLabel.Text = "**age should be greater than 18";
+                    extension = ".jpeg";
                 }
                 else
                 {
-                    string verificationToken = Crypto.GenerateSalt(8);
-                    string salt = Crypto.GenerateSalt(16);
-
-                    string tokenisedUrl = ConfigurationManager.AppSettings["domain"] + "VerifyEmail.aspx?token=" + verificationToken + "&email=" +email;
-                    String emailBody = "Please follow the link to <a href = \"" + tokenisedUrl + "\">verify your email</a>";
-                    
-                    // change email body in future
-                    Util.SendEmail(email, "Verification mail from HR Management Site",emailBody);
-                    SqlCommand insertCommand = new SqlCommand("Insert into [User](email, firstName, lastName, isEmailVerified, verificaticationToken, birthdate, role, hashedPassword, salt) values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
-                    insertCommand.Parameters.AddWithValue("email", email);
-                    insertCommand.Parameters.AddWithValue("firstName", FirstNameInput.Text.Trim().ToLower());
-                    insertCommand.Parameters.AddWithValue("lastName", LastNameInput.Text.Trim().ToLower());
-                    insertCommand.Parameters.AddWithValue("verificationToken", verificationToken);
-                    insertCommand.Parameters.AddWithValue("birthdate", birthdate.ToShortDateString());
-                    insertCommand.Parameters.AddWithValue("role", RoleInput.SelectedValue.Trim().ToLower());
-                    insertCommand.Parameters.AddWithValue("hashedPassword", Crypto.HashPassword(salt+PasswordInput.Text));
-                    insertCommand.Parameters.AddWithValue("salt", salt);
-                    try
-                    {
-                        insertCommand.ExecuteNonQuery();
-                        AlertLabel.Visible = true;
-                        AlertLabel.Text = "Succesfully Registered, Check you email for verification link, redirecting to login...";
-                        string timeOutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
-                        Util.TimeoutAndRedirect(Page, timeOutUrl);
-                    }
-                    catch
-                    {
-                        Response.Redirect("~/error.aspx");
-                    }
+                    extension = ".pdf";
                 }
+                string fileName = Request.Cookies["email"].Value.Replace('.', '_') + "_Resume";
+                string file = Server.MapPath("~/Uploads/simpleuser/" + fileName);
+                if (File.Exists(file + ".pdf"))
+                {
+                    File.Delete(file + ".pdf");
+                }
+                if (File.Exists(file + ".jpeg"))
+                {
+                    File.Delete(file + ".jpeg");
+                }
+                fileName += extension;
+                file += extension;
+                ResumeUpload.SaveAs(file);
 
+                ResumeLabel.Text = ResumeUpload.PostedFile.FileName + " uploaded";
+                ResumeLabel.CssClass = "valid-input";
+
+                ViewState["resume"] = fileName;
+            }
+            else
+            {
+                ResumeLabel.Text = "Uploaded file should be of type jpg, jpeg or pdf";
+                ResumeLabel.CssClass = "invalid-input";
             }
         }
         else
         {
-            Response.Redirect("~/error.aspx");
+            ResumeLabel.Text = "Uploaded file should have maximum size of 2MB";
+            ResumeLabel.CssClass = "invalid-input";
         }
     }
 }

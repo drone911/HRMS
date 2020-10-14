@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/HRHome.master" AutoEventWireup="true" CodeFile="HRRegistration.aspx.cs" Inherits="HRRegistration" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="PageContent" runat="Server">
-    <div>
+    <div style="padding-bottom:50px">
         <div class="col-12">
             <h2>Need Some More Details!</h2>
             <hr style="border-top: 3px solid rgba(0, 0, 0, 0.5)" />
@@ -28,7 +28,7 @@
                     <asp:TextBox runat="server" CssClass="form-control" ID="AddressLine2" ValidationGroup="vg" required />
                 </div>
                 <div class="form-group">
-                    <label class="col-form-label" for="PincodeInput" req>Pincode</label>
+                    <label class="col-form-label" for="PincodeInput">Pincode</label>
                     <asp:TextBox runat="server" CssClass="form-control" ID="PincodeInput" ValidationGroup="vg1" CausesValidation="true" required AutoPostBack="true" OnTextChanged="PincodeInput_TextChanged" />
                     <asp:RegularExpressionValidator ControlToValidate="PincodeInput" ValidationGroup="vg1" ErrorMessage="*Not A Valid Pincode" CssClass="invalid-input" runat="server" ValidationExpression="[1-9]{1}[0-9]{5}$" Display="Dynamic"></asp:RegularExpressionValidator>
                     <asp:Label ID="PincodeLabel" runat="server"></asp:Label>
@@ -40,11 +40,9 @@
                     <asp:TextBox runat="server" CssClass="form-control" ID="CityInput" ReadOnly="true" ValidationGroup="vg" required />
                 </div>
                 <div class="form-group">
-                    <label class="col-form-label" for="CityInput">State</label>
+                    <label class="col-form-label" for="StateInput">State</label>
                     <asp:TextBox runat="server" CssClass="form-control" ID="StateInput" ValidationGroup="vg" required ReadOnly="True" />
                 </div>
-            </div>
-            <div class="mx-auto col-5">
                 <div class="form-group">
                     <label class="col-form-label" for="BloodGroupInput">Blood Group</label>
                     <asp:DropDownList CssClass="form-control" runat="server" ValidationGroup="vg" ID="BloodGroupInput">
@@ -60,10 +58,15 @@
                     </asp:DropDownList>
                     <asp:CompareValidator runat="server" CssClass="invalid-input" ErrorMessage="*Select An Option" ControlToValidate="BloodGroupInput" Display="Dynamic" ValidationGroup="vg" ValueToCompare="-1" Operator="NotEqual"></asp:CompareValidator>
                 </div>
+                 <!-- make it a dropdown list -->
+               
                 <div class="form-group">
                     <label class="col-form-label" for="QualificationInput">Qualification</label>
                     <asp:TextBox runat="server" CssClass="form-control" ID="QualificationInput" ValidationGroup="vg" required />
                 </div>
+            </div>
+            <div class="mx-auto col-5">
+                
                 <label class="col-form-label" for="EmployementVerificationProofUpload">Upload Employee Verification Certificate</label>
                 <div class="form-group">
                     <div class="custom-file">
@@ -112,30 +115,7 @@
             </div>
         </div>
     </div>
-    <span runat="server" id="pop" class="popout hide"></span>
     <style>
-        .popout {
-            position: fixed;
-            right: 25px;
-            bottom: 0px;
-            background-color: black;
-            color: white;
-            font-size: 1.2rem;
-            padding: 0.6rem 2.5rem;
-            border-radius: 5px;
-            transition: all 0.4s cubic-bezier(0.53, 0.01, 0.38, 1.23);
-        }
-
-        .hide {
-            transform: translateY(+20px);
-            opacity: 0;
-        }
-
-        .show {
-            transform: translateY(-17px);
-            opacity: 1;
-        }
-
         .invalid-input {
             color: red;
             font-size: small;

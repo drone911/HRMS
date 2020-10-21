@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Web;
 using System.Net.Mail;
-using System.Configuration;
 using System.Web.UI.HtmlControls;
 using System.Web.UI;
 using System.Net.Http;
+using System.Web.UI.WebControls;
+using System.Data;
 
 namespace hrms
-{   
+{
     // helper class
     public class PostOffice
     {
@@ -30,7 +29,7 @@ namespace hrms
         static public void SendEmail(string to, string subject, string body)
         {
             // change gmail
-            MailMessage mail = new MailMessage("something@gmail.com", to, subject, body);
+            MailMessage mail = new MailMessage("jigar1822@gmail.com", to, subject, body);
             SmtpClient smtpClient = new SmtpClient();
             smtpClient.EnableSsl = true;
             smtpClient.Send(mail);
@@ -119,6 +118,35 @@ namespace hrms
                 }
             }
             return toReturn;
+        }
+        static public void AddTableHeaders(Table table, DataTable datatable)
+        {
+            TableHeaderRow headerRow = new TableHeaderRow();
+            foreach (DataColumn column in datatable.Columns)
+            {
+                TableHeaderCell cell = new TableHeaderCell();
+                cell.Text = column.ColumnName;
+                cell.Scope = TableHeaderScope.Column;
+                cell.CssClass = "th-sm";
+                headerRow.Cells.Add(cell);
+            }
+            table.Controls.AddAt(0, headerRow);
+        }
+        static public void AddTableHeaders(Table table, DataTable datatable, TableHeaderCell[] ExtraCells)
+        {
+            TableHeaderRow headerRow = new TableHeaderRow();
+            foreach (DataColumn column in datatable.Columns)
+            {
+                TableHeaderCell cell = new TableHeaderCell();
+                cell.Text = column.ColumnName;
+                cell.Scope = TableHeaderScope.Column;
+                headerRow.Cells.Add(cell);
+            }
+            foreach (TableHeaderCell cell in ExtraCells)
+            {
+                headerRow.Cells.Add(cell);
+            }
+            table.Controls.AddAt(0, headerRow);
         }
     }
 }

@@ -10,7 +10,7 @@
 
     <link href="~/Scripts/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    
+
     <script src="Scripts/js/jquery-3.3.1.min.js"></script>
     <script src="Scripts/js/popper.min.js"></script>
     <script src="Scripts/js/bootstrap.min.js"></script>
@@ -43,6 +43,9 @@
                         <asp:Label CssClass="nav-link" Visible="false" runat="server" ID="HiLabel"></asp:Label></li>
                     <li class="nav-item">
                         <asp:HyperLink CssClass="nav-link" runat="server" ID="LoginLogoutHyperLink"></asp:HyperLink></li>
+                    <li class="nav-item">
+                        <asp:HyperLink CssClass="nav-link" runat="server" ID="Register" NavigateUrl="~/Registration.aspx">Register</asp:HyperLink>
+                    </li>
                 </ul>
             </div>
         </header>
@@ -50,13 +53,26 @@
         <asp:ContentPlaceHolder ID="MainContent" runat="server">
         </asp:ContentPlaceHolder>
         <style>
-            #bootstrapovvr header{
-                background-color:#2699FB;
-                
+            .invalid-input {
+                color: red;
+                font-size: small;
+                padding-left: 2px
             }
-            #bootstrapovvr #navbarNavDropdown{
-                background-color:#2699FB 
+
+            .valid-input {
+                color: green;
+                font-size: small;
+                padding-left: 2px
             }
+
+            #bootstrapovvr header {
+                background-color: #2699FB;
+            }
+
+            #bootstrapovvr #navbarNavDropdown {
+                background-color: #2699FB
+            }
+
             #bootstrapovvr .nav-link {
                 color: white;
                 width: 100%;
@@ -80,10 +96,11 @@
                 padding-top: 0rem;
                 padding-bottom: 0rem;
             }
-            #bootstrapovvr button.navbar-toggler{
-                    padding: 1rem;
-            
+
+            #bootstrapovvr button.navbar-toggler {
+                padding: 1rem;
             }
+
             .scrolled-down {
                 transform: translateY(-100%);
                 transition: all 0.3s ease-in-out;
@@ -93,22 +110,15 @@
                 transform: translateY(0);
                 transition: all 0.3s ease-in-out;
             }
-            a.navbar-brand{
-                    transition: all 0.3s ease-in-out;
-            }
-            a.navbar-brand:hover{
-                font-size:1.30rem;
-                
-            }
         </style>
         <script>
             $('body').css('padding-top', $('.navbar').outerHeight() + 'px')
 
             if ($('.smart-scroll').length > 0) { // check if element exists
                 var last_scroll_top = 0;
-                $(window).on('scroll', function() {
+                $(window).on('scroll', function () {
                     scroll_top = $(this).scrollTop();
-                    if(scroll_top < last_scroll_top) {
+                    if (scroll_top < last_scroll_top) {
                         $('.smart-scroll').removeClass('scrolled-down').addClass('scrolled-up');
                     }
                     else {

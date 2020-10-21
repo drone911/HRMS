@@ -18,7 +18,7 @@
             <div class="jumbotron col-8 mx-auto" style="margin-top: 20vh">
                 <h1 class="display-4">Didn't receive an Email?</h1>
                 <hr class="my-4" />
-                <div class="form-group form-inline">
+                <div class="form-group">
                     <asp:Label  runat="server" CssClass="pr-2">Enter your registered email</asp:Label>
                     <asp:TextBox TextMode="Email" CssClass="form-control" runat="server" ID="EmailTextBox" ValidationGroup="vg" required></asp:TextBox>
                     <asp:Label runat="server" ID="EmailLabel"></asp:Label>

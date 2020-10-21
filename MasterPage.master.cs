@@ -23,8 +23,9 @@ public partial class MasterPage : System.Web.UI.MasterPage
 
             LoginLogoutHyperLink.NavigateUrl = "~/Logout.aspx";
             LoginLogoutHyperLink.Text = "Log Out";
-            HiLabel.Text = "Hi! " + username;
+            HiLabel.Text = "Hi " + username;
             HiLabel.Visible = true;
+            Register.Visible = false;
         }
         else
         {

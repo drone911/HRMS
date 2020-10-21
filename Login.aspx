@@ -36,7 +36,7 @@
 
         <div id="cardDiv" class="card col-3 ">
             <article class="card-body">
-                <asp:HyperLink runat="server" NavigateUrl="~/UserRegistration.aspx" CssClass="float-right btn btn-outline-primary">Sign up</asp:HyperLink>
+                <asp:HyperLink runat="server" NavigateUrl="~/Registration.aspx" CssClass="float-right btn btn-outline-primary">Sign up</asp:HyperLink>
                 <h4 class="card-title mb-4 mt-1">Sign in</h4>
                 <hr />
                 <div class="row w-100">

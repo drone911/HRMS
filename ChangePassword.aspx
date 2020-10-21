@@ -59,7 +59,7 @@
             position: fixed;
             right: 25px;
             bottom: 0px;
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.87);
             color: white;
             font-size: 1.2rem;
             padding: 0.6rem 2.5rem;

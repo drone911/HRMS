@@ -1,8 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/HRHome.master" AutoEventWireup="true" CodeFile="HRAddEmployee.aspx.cs" Inherits="HRAddEmployee" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="PageContent" runat="Server">
-    <div class="w-100" style="height: 95%;">
-        <div class="jumbotron col-8 mx-auto" style="margin-top: 20vh">
+    <div class="w-100">
+        <div class="jumbotron col-10 mx-auto" style="padding-left:5rem;padding-right: 5rem;">
             <h1 class="display-4">Add An Employee</h1>
             <hr class="my-4" />
             <div class="form-group">
@@ -28,11 +28,16 @@
                 <asp:Label runat="server" CssClass="pr-2">Position Offered</asp:Label>
                 <asp:TextBox CssClass="form-control" runat="server" ID="PositionInput" ValidationGroup="vg" required></asp:TextBox>
             </div>
-            <div class="alert-warning">The Employee will verify by mail his/her position before being added as an employee</div>
-            <asp:Button runat="server" CssClass="btn btn-primary btn-lg" ValidationGroup="vg" Text="Add Employee" OnClick="AddEmployee_Click"/>
+            <asp:Button runat="server" CssClass="btn btn-primary btn-lg mb-3" ValidationGroup="vg" Text="Add Employee" OnClick="AddEmployee_Click"/>
+            <div class="alert-warning">*The Employee will verify by mail his/her position before being added as an employee</div>
             <br />
             <br />
         </div>
     </div>
+    <style>
+        body{
+            overflow-y:hidden;
+        }
+    </style>
 </asp:Content>
 

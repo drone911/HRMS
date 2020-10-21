@@ -77,29 +77,19 @@ public partial class UserRegistration : System.Web.UI.Page
     }
     protected void ResumeButton_Click(object sender, EventArgs e)
     {
-        if (ResumeUpload.PostedFile.ContentLength > 0 && ResumeUpload.PostedFile.ContentLength <= 2000000)
+        if (ResumeUpload.PostedFile.ContentLength > 0 && ResumeUpload.PostedFile.ContentLength <= 5000000)
         {
-            if (ResumeUpload.PostedFile.ContentType == "image/jpeg" || ResumeUpload.PostedFile.ContentType == "application/pdf")
+            if (ResumeUpload.PostedFile.ContentType == "application/pdf")
             {
                 string extension;
-                if (ResumeUpload.PostedFile.ContentType == "image/jpeg")
-                {
-                    extension = ".jpeg";
-                }
-                else
-                {
-                    extension = ".pdf";
-                }
+                extension = ".pdf";
                 string fileName = Request.Cookies["email"].Value.Replace('.', '_') + "_Resume";
                 string file = Server.MapPath("~/Uploads/simpleuser/" + fileName);
                 if (File.Exists(file + ".pdf"))
                 {
                     File.Delete(file + ".pdf");
                 }
-                if (File.Exists(file + ".jpeg"))
-                {
-                    File.Delete(file + ".jpeg");
-                }
+                
                 fileName += extension;
                 file += extension;
                 ResumeUpload.SaveAs(file);
@@ -111,13 +101,13 @@ public partial class UserRegistration : System.Web.UI.Page
             }
             else
             {
-                ResumeLabel.Text = "Uploaded file should be of type jpg, jpeg or pdf";
+                ResumeLabel.Text = "Uploaded file should be of type pdf";
                 ResumeLabel.CssClass = "invalid-input";
             }
         }
         else
         {
-            ResumeLabel.Text = "Uploaded file should have maximum size of 2MB";
+            ResumeLabel.Text = "Uploaded file should have maximum size of 5MB";
             ResumeLabel.CssClass = "invalid-input";
         }
     }

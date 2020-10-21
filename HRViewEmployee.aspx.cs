@@ -14,10 +14,14 @@ public partial class HRViewEmployee : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         string email = Request.QueryString["email"];
+        if (email == null)
+        {
+            Response.Redirect("~/HRViewEmployees.aspx");
+        }
         SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
         connection.Open();
         SqlCommand getData = new SqlCommand("Select firstName, LastName, birthdate, profilepicture, employedHREmail, organisationRole, [from], mobileNumber, [to], Address, pincode, city, state, bloodGroup, qualification from [Employee], [SimpleUser], [User] where [Employee].[to] IS NULL and [Employee].[email]=[SimpleUser].[email] and [SimpleUser].[email]=[User].[email] and [User].[email]=@email", connection);
-        getData.Parameters.AddWithValue("email", "temp1234@gmail.com");
+        getData.Parameters.AddWithValue("email", email);
         DataTable table = new DataTable();
         SqlDataAdapter dataAdapter = new SqlDataAdapter(getData);
         dataAdapter.Fill(table);
@@ -34,7 +38,7 @@ public partial class HRViewEmployee : System.Web.UI.Page
                 NameLabel.Text = row["firstName"] + " " + row["lastName"];
                 PositionLabel.Text = row["organisationRole"] + "";
                 EmployeeProfilePic.Src = "Uploads/ProfilePictures/" + row["profilepicture"];
-                AddressLabel.Text = row["Address"] + "\n" + row["city"] + "(" + row["pincode"] + ")" + "\n" + row["state"];
+                AddressLabel.Text = row["Address"] + "<br/>" + row["city"] + "(" + row["pincode"] + ")" + "<br/>" + row["state"];
                 ContactLabel.Text += row["mobileNumber"];
                 EmailLabel.Text += email;
                 BloodGroupLabel.Text += row["bloodGroup"];
@@ -46,5 +50,5 @@ public partial class HRViewEmployee : System.Web.UI.Page
             Response.Redirect("~/error.aspx");
         }
 
-            }
+        }
 }

@@ -15,7 +15,7 @@ public partial class Registration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+
         EmailLabel.Text = "";
         BirthdayLabel.Text = "";
         AlertLabel.Visible = false;
@@ -40,13 +40,13 @@ public partial class Registration : System.Web.UI.Page
             SqlDataAdapter dataAdapter = new SqlDataAdapter(sqlCommand);
             DataTable ds = new DataTable();
             dataAdapter.Fill(ds);
-            if (ds.Rows.Count> 0)
+            if (ds.Rows.Count > 0)
             {
                 EmailLabel.Text = "**Email already register, please register a from different email address.";
             }
             else
             {
-                String[] date= FlatpickrCalender.Text.Split('-');
+                String[] date = FlatpickrCalender.Text.Split('-');
                 var birthdate = new DateTime(Convert.ToInt32(date[0]), Convert.ToInt32(date[1]), Convert.ToInt32(date[2]));
                 if (DateTime.Now.Year - birthdate.Year < 18)
                 {
@@ -57,32 +57,27 @@ public partial class Registration : System.Web.UI.Page
                     string verificationToken = Crypto.GenerateSalt(8);
                     string salt = Crypto.GenerateSalt(16);
 
-                    string tokenisedUrl = ConfigurationManager.AppSettings["domain"] + "VerifyEmail.aspx?token=" + verificationToken + "&email=" +email;
+                    string tokenisedUrl = ConfigurationManager.AppSettings["domain"] + "VerifyEmail.aspx?token=" + verificationToken + "&email=" + email;
                     String emailBody = "Please follow the link to <a href = \"" + tokenisedUrl + "\">verify your email</a>";
-                    
+
                     // change email body in future
-                    Util.SendEmail(email, "Verification mail from HR Management Site",emailBody);
-                    SqlCommand insertCommand = new SqlCommand("Insert into [User](email, firstName, lastName, isEmailVerified, verificaticationToken, birthdate, role, hashedPassword, salt) values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
+                    Util.SendEmail(email, "Verification mail from HR Management Site", emailBody);
+                    SqlCommand insertCommand = new SqlCommand("Insert into [User](email, firstName, lastName, isEmailVerified, verificationToken, birthdate, role, hashedPassword, salt) values(@email, @firstName, @lastName, 0, @verificationToken, @birthdate, @role, @hashedPassword, @salt)", sqlConnection);
                     insertCommand.Parameters.AddWithValue("email", email);
                     insertCommand.Parameters.AddWithValue("firstName", FirstNameInput.Text.Trim().ToLower());
                     insertCommand.Parameters.AddWithValue("lastName", LastNameInput.Text.Trim().ToLower());
                     insertCommand.Parameters.AddWithValue("verificationToken", verificationToken);
                     insertCommand.Parameters.AddWithValue("birthdate", birthdate.ToShortDateString());
                     insertCommand.Parameters.AddWithValue("role", RoleInput.SelectedValue.Trim().ToLower());
-                    insertCommand.Parameters.AddWithValue("hashedPassword", Crypto.HashPassword(salt+PasswordInput.Text));
+                    insertCommand.Parameters.AddWithValue("hashedPassword", Crypto.HashPassword(salt + PasswordInput.Text));
                     insertCommand.Parameters.AddWithValue("salt", salt);
-                    try
-                    {
-                        insertCommand.ExecuteNonQuery();
-                        AlertLabel.Visible = true;
-                        AlertLabel.Text = "Succesfully Registered, Check you email for verification link, redirecting to login...";
-                        string timeOutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
-                        Util.TimeoutAndRedirect(Page, timeOutUrl);
-                    }
-                    catch
-                    {
-                        Response.Redirect("~/error.aspx");
-                    }
+                    
+                    insertCommand.ExecuteNonQuery();
+                    AlertLabel.Visible = true;
+                    AlertLabel.Text = "Succesfully Registered, Check you email for verification link, redirecting to login...";
+                    string timeOutUrl = ConfigurationManager.AppSettings["domain"] + "Login.aspx";
+                    Util.TimeoutAndRedirect(Page, timeOutUrl, 4);
+
                 }
 
             }

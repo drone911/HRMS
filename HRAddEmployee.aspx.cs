@@ -46,7 +46,7 @@ public partial class HRAddEmployee : System.Web.UI.Page
         {
             if ((Boolean)table.Rows[0]["isEmployed"])
             {
-                EmailLabel.Text = "Employee is already employed at another organisation.";
+                EmailLabel.Text = "User is already employed.";
                 EmailLabel.CssClass = "invalid-input";
                 sendMail = false;
             }
@@ -60,28 +60,26 @@ public partial class HRAddEmployee : System.Web.UI.Page
             if (table.Rows.Count > 0)
             {
                 // change subject and body for better representation
-                SqlCommand insertEmployee = new SqlCommand("Insert into [Employee](eID, employedHREmail, organisationRole, heirarchy, from, email, isVerified, verificationToken) values(@eID, @employedHREmail, @organisationRole, @heirarchy, @from, @email, @isVerified, @verificationToken)", connection);
+                SqlCommand insertEmployee = new SqlCommand("Insert into [Employee](eID, employedHREmail, organisationRole, heirarchy, [from], email, isVerified, verificationToken) values(@eID, @employedHREmail, @organisationRole, @heirarchy, @from, @email, @isVerified, @verificationToken)", connection);
                 String Token = Crypto.GenerateSalt(16);
-                insertEmployee.Parameters.AddWithValue("eID", Crypto.GenerateSalt(16));
+                insertEmployee.Parameters.AddWithValue("eID", Crypto.GenerateSalt(8));
                 insertEmployee.Parameters.AddWithValue("employedHREmail", Util.GetEmail(Request));
                 insertEmployee.Parameters.AddWithValue("organisationRole", position);
                 insertEmployee.Parameters.AddWithValue("heirarchy", positionHeirarchy);
-                insertEmployee.Parameters.AddWithValue("from", DateTime.Today.ToString("dd/MM/yyyy"));
+                insertEmployee.Parameters.AddWithValue("from", DateTime.Today.ToString("yyyy-MM-dd"));
                 insertEmployee.Parameters.AddWithValue("email", email);
                 insertEmployee.Parameters.AddWithValue("isVerified", 0);
                 insertEmployee.Parameters.AddWithValue("verificationToken", Token);
-                
-
-                string url = ConfigurationManager.AppSettings["domain"] + "verifyAddEmployee.aspx?email=" + email + "&token="+Token;
+                insertEmployee.ExecuteNonQuery();
+                string url = ConfigurationManager.AppSettings["domain"].ToString() + "verifyAddEmployee.aspx?email=" + email + "&token="+Token;
                 string subject = "Verification for position at HRMS";
-                string body = "You have been added as " + position + "at" + table.Rows[0]["OrganisationName"].ToString() + ". Please Click on this link to verify position "+ url + ". If their is any descepancy contact corresponding HR at " + Util.GetEmail(Request);
+                string body = "You have been added as " + position + "at " + table.Rows[0]["organisationName"].ToString() + ". Please Click on this link to verify position <a href = \"" + url + "\">verify your email</a>. If their is any descepancy contact corresponding HR at " + Util.GetEmail(Request);
                 Util.SendEmail(email, subject, body);
                 
-                // this might not work, test it afterwards
                 string[] param = new string[] { "Mail Send Succesfully", "2" };
                 
                 Util.CallJavascriptFunction(Page, "popout", param);
-                Util.TimeoutAndRedirect(Page, "ConfigurationManager.AppSettings[\"domain\"]" + "HRAddEmployee.aspx", 2);
+                Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "HRAddEmployee.aspx", 3);
             }
             else
             {

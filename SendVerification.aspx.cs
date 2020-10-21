@@ -27,7 +27,6 @@ public partial class SendVerification : System.Web.UI.Page
         if (sqlConnection.State.ToString() == "Open")
         {
             SqlCommand sqlCommand = new SqlCommand("select email, isEmailVerified from [User] where email=@email", sqlConnection);
-
             sqlCommand.Parameters.AddWithValue("email", email);
             SqlDataAdapter dataAdapter = new SqlDataAdapter(sqlCommand);
             DataTable dt = new DataTable();

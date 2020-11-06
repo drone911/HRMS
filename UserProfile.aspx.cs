@@ -27,7 +27,7 @@ public partial class UserProfile : System.Web.UI.Page
 
         if (Session["isEmployed"].ToString() == true.ToString())
         {
-            getUserDetails = new SqlCommand("Select profilepicture, resume, mobileNumber, address, pincode, city, state, bloodGroup, qualification, organisationName, firstName, lastName, CAST(birthDate as varchar(10)) as birthDate, organisationRole from [User], [SimpleUser], [Employee], [HR] where [User].email = [SimpleUser].email and [SimpleUser].email = [Employee].email and [Employee].email=@email and [Employee].[from] IS NULL and [Employee].employedHREmail=[HR].email", connection);
+            getUserDetails = new SqlCommand("Select profilepicture, resume, [SimpleUser].mobileNumber, [SimpleUser].address, [SimpleUser].pincode, [SimpleUser].city, [SimpleUser].state, [SimpleUser].bloodGroup, [SimpleUser].qualification, [HR].organisationName, [User].firstName, [User].lastName, CAST(birthDate as varchar(10)) as 'birthDate', [Employee].organisationRole from [User], [SimpleUser], [Employee], [HR] where [User].email = [SimpleUser].email and [SimpleUser].email = [Employee].email and [Employee].email=@email and [Employee].[to] IS NULL and [Employee].employedHREmail=[HR].email", connection);
             getUserDetails.Parameters.AddWithValue("email", Util.GetEmail(Request));
         }
         else

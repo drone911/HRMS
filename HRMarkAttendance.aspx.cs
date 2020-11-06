@@ -23,15 +23,14 @@ public partial class HRMarkAttendance : System.Web.UI.Page
         dataTable = new DataTable();
         adapter.Fill(dataTable);
 
-        SqlCommand attendance = new SqlCommand("Select eID, [date] from Attendance where [date]=@date and eID IN (Select eID from [Employee], [User] where [Employee].email =[User].email and [Employee].[to] IS NULL and [Employee].isVerified=1 and [Employee].[employedHREmail] = @hremail)", connection);
+        SqlCommand attendance = new SqlCommand("Select eID, [date] from Attendance where [date]=GETDATE() and eID IN (Select eID from [Employee], [User] where [Employee].email =[User].email and [Employee].[to] IS NULL and [Employee].isVerified=1 and [Employee].[employedHREmail] = @hremail)", connection);
         DataTable attendanceTable = new DataTable();
 
 
 
         attendance.Parameters.AddWithValue("hremail", Util.GetEmail(Request));
 
-        attendance.Parameters.AddWithValue("date", DateTime.Now.ToString("yyyy-MM-dd"));
-        adapter.SelectCommand = attendance;
+       adapter.SelectCommand = attendance;
         adapter.Fill(attendanceTable);
 
         checkBoxes = new CheckBox[dataTable.Rows.Count];

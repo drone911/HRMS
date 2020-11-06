@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.UI;
@@ -13,6 +12,8 @@ using System.Web.UI.WebControls;
 
 public partial class HRAddEmployee : System.Web.UI.Page
 {
+    private DataTable dataTable;
+    private CheckBox[] checkBoxes;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -26,6 +27,49 @@ public partial class HRAddEmployee : System.Web.UI.Page
                 PositionInput.Text = Request.QueryString["position"].ToString();
             }
         }
+
+        SqlConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ConnectionString);
+        connection.Open();
+        SqlCommand selectEmployees = new SqlCommand("Select firstName, lastName, organisationRole, [Employee].[email] from [Employee], [User] where [Employee].email=[User].email and [Employee].[to] IS NULL and [Employee].isVerified=1 and [Employee].[employedHREmail] = @hremail", connection);
+        selectEmployees.Parameters.AddWithValue("hremail", Util.GetEmail(Request));
+        
+        SqlDataAdapter adapter = new SqlDataAdapter(selectEmployees);
+
+        dataTable = new DataTable();
+        adapter.Fill(dataTable);
+
+        checkBoxes = new CheckBox[dataTable.Rows.Count];
+        for (int i = 0; i < dataTable.Rows.Count; i++)
+        {
+            checkBoxes[i] = new CheckBox();
+            checkBoxes[i].Checked = false;
+            checkBoxes[i].Enabled = true;
+        }
+        for (int i = 0; i < dataTable.Rows.Count; i++)
+        {
+            TableRow tableRow = new TableRow();
+            Label nameLabel = new Label();
+            TableCell nameCell = new TableCell();
+            TableCell positionCell = new TableCell();
+            TableCell checkboxCell = new TableCell();
+
+            TableCell cell = new TableCell();
+
+            nameLabel.Text = Util.CapFirstLetter(dataTable.Rows[i]["firstName"].ToString()) + " " + Util.CapFirstLetter(dataTable.Rows[i]["lastName"].ToString());
+            cell.Controls.Add(nameLabel);
+            tableRow.Cells.Add(cell);
+
+            Label positionLabel = new Label();
+            positionLabel.Text = Util.CapFirstLetter(dataTable.Rows[i]["organisationRole"].ToString());
+            positionCell.Controls.Add(positionLabel);
+            tableRow.Cells.Add(positionCell);
+
+            checkboxCell.Controls.Add(checkBoxes[i]);
+            tableRow.Cells.Add(checkboxCell);
+
+            UpperHeirarchyTable.Rows.Add(tableRow);
+        }
+
     }
     protected void AddEmployee_Click(object sender, EventArgs e)
     {
@@ -37,7 +81,7 @@ public partial class HRAddEmployee : System.Web.UI.Page
         connection.Open();
         SqlCommand checkAvailability = new SqlCommand("Select isEmployed from [SimpleUser] where email = @email", connection);
         checkAvailability.Parameters.AddWithValue("email", email);
-        
+
         SqlDataAdapter adapter = new SqlDataAdapter(checkAvailability);
         DataTable table = new DataTable();
         adapter.Fill(table);
@@ -50,6 +94,12 @@ public partial class HRAddEmployee : System.Web.UI.Page
                 EmailLabel.CssClass = "invalid-input";
                 sendMail = false;
             }
+        }
+        else
+        {
+            EmailLabel.Text = "No Such User, Please Check Email ID.";
+            EmailLabel.CssClass = "invalid-input";
+            sendMail = false;
         }
         if (sendMail)
         {
@@ -71,13 +121,35 @@ public partial class HRAddEmployee : System.Web.UI.Page
                 insertEmployee.Parameters.AddWithValue("isVerified", 0);
                 insertEmployee.Parameters.AddWithValue("verificationToken", Token);
                 insertEmployee.ExecuteNonQuery();
-                string url = ConfigurationManager.AppSettings["domain"].ToString() + "verifyAddEmployee.aspx?email=" + email + "&token="+Token;
+                string url = ConfigurationManager.AppSettings["domain"].ToString() + "verifyAddEmployee.aspx?email=" + email + "&token=" + Token;
+                
                 string subject = "Verification for position at HRMS";
                 string body = "You have been added as " + position + "at " + table.Rows[0]["organisationName"].ToString() + ". Please Click on this link to verify position <a href = \"" + url + "\">verify your email</a>. If their is any descepancy contact corresponding HR at " + Util.GetEmail(Request);
                 Util.SendEmail(email, subject, body);
-                
+
+                int addedCount = 0;
+                string insertString = "Insert into [Heirarchy] Values ";
+                for (int i = 0; i < dataTable.Rows.Count; i++)
+                {
+                    if (checkBoxes[i].Enabled)
+                    {
+                        if (checkBoxes[i].Checked)
+                        {
+                            insertString += "('" + dataTable.Rows[i]["email"] + "','" + EmailTextBox.Text.ToString().ToLower() + "'),";
+                            addedCount++;
+                        }
+                    }
+                }
+                if (addedCount != 0)
+                {
+                    insertString = insertString.Substring(0, insertString.Length - 1);
+                    insertString += ";";
+                    SqlCommand insert = new SqlCommand(insertString, connection);
+                    insert.ExecuteNonQuery();
+                }
+
                 string[] param = new string[] { "Mail Send Succesfully", "2" };
-                
+
                 Util.CallJavascriptFunction(Page, "popout", param);
                 Util.TimeoutAndRedirect(Page, ConfigurationManager.AppSettings["domain"] + "HRAddEmployee.aspx", 3);
             }

@@ -55,6 +55,14 @@ public partial class HRHome : System.Web.UI.MasterPage
             }
 
         }
+        if (Request.Cookies["profileURL"] == null)
+        {
+            profilePic.Src = "~/Uploads/ProfilePictures/profilePic.png";
+        }
+        else
+        {
+            profilePic.Src= Request.Cookies["profileURL"].Value;
+        }
     }
     protected void Page_Load(object sender, EventArgs e)
     {

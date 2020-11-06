@@ -7,7 +7,7 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <div id="profilePicWrapper">
-                        <img id="profilePic" src="Uploads/ProfilePictures/profilePic.png" />
+                        <img src="~/Uploads/ProfilePictures/profilePic.png" ID="profilePic" class="profilePic imgWidthGreater" runat="server" />
                     </div>
                 </li>
                 <li><asp:Hyperlink runat="server" ID="ProfileSelection" href="UserProfile.aspx">Profile</asp:Hyperlink> </li>
@@ -18,7 +18,7 @@
                     <asp:Hyperlink runat="server" ID="Training" NavigateUrl="UserTraining.aspx">Trainings</asp:Hyperlink>
                 </li>
                 <li>
-                    <asp:Hyperlink runat="server" ID="UserViewJobPosting" NavigateUrl="UserViewJobPosting.aspx">View All Job Postings</asp:Hyperlink>
+                    <asp:Hyperlink runat="server" ID="UserViewJobPosting" NavigateUrl="UserViewJobPostings.aspx">View All Job Postings</asp:Hyperlink>
                 </li>
             </ul>
         </div>
@@ -61,15 +61,22 @@
         }
         /* side bar */
         #profilePicWrapper {
-            object-fit: contain;
-            height: 100px;
+            margin-left:15px;
+            text-indent:0px !important;
             width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 50%;
+            border:solid 4px white;
         }
 
-        #profilePic {
-            border-radius: 50%;
-            height: 100%;
-            width: 100%;
+        .imgWidthGreater{
+            height:100%;
+            width:auto;
+        }
+        .imgHeightGreater{
+            width:100%;
+            height:auto;
         }
 
         #sidebar-wrapper {
@@ -199,7 +206,14 @@
         }
     </style>
     <script>
+        $(document).ready(function () {
+            if ($('.profilePic').width() > $('.profilePic').height()) {
 
+                $('.profilePic').addClass('imgWidthGreater').removeClass('imgHeightGreater');
+            } else {
+                $('.profilePic').addClass('imgHeightGreater').removeClass('imgWidthGreater');
+            }
+        });
         if ($('.smart-scroll-navbar').length > 0) {
             var last_scroll_top_navbar = 0;
             $(window).on('scroll', function () {
@@ -223,5 +237,6 @@
                 $(".popout").removeClass("show").addClass("hide");
             }, time * 1000);
         }
+
     </script>
 </asp:Content>

@@ -65,17 +65,13 @@ public partial class HRViewJobPostings : System.Web.UI.Page
         datatable.Columns.RemoveAt(0);
 
         JobTable.Rows.Clear();
-        TableHeaderCell[] ExtraCells = new TableHeaderCell[2];
+        TableHeaderCell[] ExtraCells = new TableHeaderCell[1];
         TableHeaderCell viewCell = new TableHeaderCell();
 
         viewCell.Text = "View";
         viewCell.Scope = TableHeaderScope.Column;
-        TableHeaderCell removeCell = new TableHeaderCell();
-        removeCell.Text = "Remove";
-        removeCell.Scope = TableHeaderScope.Column;
-
+        
         ExtraCells[0] = viewCell;
-        ExtraCells[1] = removeCell;
         Util.AddTableHeaders(JobTable, datatable, ExtraCells);
 
         for (int i = 0; i < datatable.Rows.Count; i++)
@@ -104,16 +100,7 @@ public partial class HRViewJobPostings : System.Web.UI.Page
             cell.Controls.Add(link);
             cell.CssClass = "no-search";
 
-            Button remove = new Button();
-            remove.Text = "Remove Job";
-            remove.CssClass = "btn btn-outline-danger";
-
-            TableCell cell1 = new TableCell();
-            cell1.Controls.Add(remove);
-            cell1.CssClass = "no-search";
-
             tableRow.Cells.Add(cell);
-            tableRow.Cells.Add(cell1);
 
             JobTable.Rows.Add(tableRow);
         }

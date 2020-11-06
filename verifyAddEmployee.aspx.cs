@@ -27,11 +27,12 @@ public partial class verifyAddEmployee : System.Web.UI.Page
         {
             if(table.Rows[0]["verificationToken"].ToString() == token)
             {
-                SqlCommand verified = new SqlCommand("Update [Employee] set isVerified=1, [from]=@from where eID=@eID;  Update [SimpleUser] set isEmployed=1 where email=@email;", connection);
+                SqlCommand verified = new SqlCommand("Begin Transaction; Update [Employee] set isVerified=1, [from]=@from where eID=@eID;  Update [SimpleUser] set isEmployed=1 where email=@email;Commit", connection);
                 verified.Parameters.AddWithValue("eID", table.Rows[0]["eID"]);
                 verified.Parameters.AddWithValue("from", DateTime.Now.ToString("yyyy-MM-dd"));
                 verified.Parameters.AddWithValue("email", email);
                 verified.ExecuteNonQuery();
+                Session["isEmployed"] = true;
                 Response.Redirect("~/UserProfile.aspx");
             }
             else

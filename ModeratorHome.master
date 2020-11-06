@@ -1,0 +1,240 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="ModeratorHome.master.cs" Inherits="ModeratorHome" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div id="wrapper" class="toggled">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="smart-scroll-navbar">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <div id="profilePicWrapper">
+                        <img src="~/Uploads/ProfilePictures/profilePic.png" ID="profilePic" class="profilePic imgWidthGreater" runat="server" />
+                    </div>
+                </li>
+                <li><asp:Hyperlink runat="server" ID="ProfileSelection" href="ModeratorProfile.aspx">Profile</asp:Hyperlink> </li>
+                <li>
+                    <asp:Hyperlink runat="server" ID="ManageHR" NavigateUrl="ModeratorViewHRs.aspx">Manager HR's</asp:Hyperlink>
+                </li>
+                <li>
+                    <asp:Hyperlink runat="server" ID="ManageMod" NavigateUrl="ModeratorViewModerators.aspx">Manager Moderators</asp:Hyperlink>
+                </li>
+            </ul>
+        </div>
+        <div id="page-content-wrapper">
+            <asp:ContentPlaceHolder ID="PageContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </div>
+    <span runat="server" id="pop" class="popout hide"></span>
+    <style>
+
+        /* popout */
+        .popout {
+            position: fixed;
+            right: 25px;
+            bottom: 0px;
+            background-color: rgba(0, 0, 0, 0.87);
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.6rem 2.5rem;
+            border-radius: 5px;
+            transition: all 0.4s cubic-bezier(0.53, 0.01, 0.38, 1.23);
+        }
+        .hide {
+            transform: translateY(+20px);
+            opacity: 0;
+        }
+
+        .show {
+            transform: translateY(-17px);
+            opacity: 1;
+        }
+        /* popout ends */
+        body {
+            overflow-x: hidden;
+        }
+        
+        #wrapper {
+            padding-left: 0;
+        }
+        /* side bar */
+        #profilePicWrapper {
+            margin-left:15px;
+            text-indent:0px !important;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 50%;
+            border:solid 4px white;
+        }
+
+        .imgWidthGreater{
+            height:100%;
+            width:auto;
+        }
+        .imgHeightGreater{
+            width:100%;
+            height:auto;
+        }
+
+        #sidebar-wrapper {
+            position: fixed;
+            top: 56px;
+            width: 0;
+            height: 100%;
+            overflow-y: auto;
+            background: #000;
+            box-shadow: 0px 0px 6px 1px black
+        }
+
+        #wrapper.toggled #sidebar-wrapper {
+            width: 250px;
+        }
+
+        #page-content-wrapper {
+            width: 83.5%;
+            left: 250px;
+            padding: 2rem;
+            position: absolute;
+            height: 100vh;
+        }
+
+        #wrapper.toggled #page-content-wrapper {
+            position: absolute;
+        }
+
+        #bootstrapovvr .sidebar-nav {
+            position: absolute;
+            top: 0;
+            width: 250px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+            #bootstrapovvr .sidebar-nav li {
+                text-indent: 20px;
+                padding: 0;
+            }
+
+                #bootstrapovvr .sidebar-nav li a {
+                    display: block;
+                    text-decoration: none;
+                    color: white;
+                    padding: 1rem;
+                    font-size: 1rem;
+                }
+
+        #bootstrapovvr sidebar-nav li a:hover {
+            text-decoration: none;
+        }
+
+        
+        #bootstrapovvr .sidebar-nav li div a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: .5rem;
+            font-size: 1rem;
+        }
+
+        #bootstrapovvr .dropdown-menu.show {
+            background: #a6a6a6;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            padding: 0;
+            border: 0;
+            left: 30px !important;
+            right: 0px;
+        }
+
+        #bootstrapovvr .sidebar-nav li div a:hover {
+            text-decoration: none;
+            color: black;
+            background: rgba(255, 255, 255, 1);
+        }
+
+        li > a:hover {
+            text-decoration: none;
+            color: black !important;
+            background: white;
+        }
+        #bootstrapovvr a.disabled{
+            color: #666666!important;
+            cursor: no-drop;
+             
+        }
+        .sidebar-nav li a:active, .sidebar-nav li a:focus {
+            text-decoration: none;
+        }
+
+        #bootstrapovvr .sidebar-nav > .sidebar-brand {
+            padding-top: 30px;
+            padding-left: 20px;
+            height: 150px;
+            line-height: 60px;
+        }
+
+        .sidebar-nav > .sidebar-brand a:hover {
+            color: #fff;
+            background: none;
+        }
+
+
+        .dropdown-item {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+            .dropdown-item:first-of-type {
+                border-top-left-radius: 15px;
+            }
+
+            .dropdown-item:last-of-type {
+                border-bottom-left-radius: 15px;
+            }
+
+        .scrolled-down-navbar {
+            transform: translateY(-56px);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .scrolled-up-navbar {
+            transform: translateY(0);
+            transition: all 0.4s ease-in-out;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            if ($('.profilePic').width() > $('.profilePic').height()) {
+
+                $('.profilePic').addClass('imgWidthGreater').removeClass('imgHeightGreater');
+            } else {
+                $('.profilePic').addClass('imgHeightGreater').removeClass('imgWidthGreater');
+            }
+        });
+        if ($('.smart-scroll-navbar').length > 0) {
+            var last_scroll_top_navbar = 0;
+            $(window).on('scroll', function () {
+                scroll_top = $(this).scrollTop();
+                if (scroll_top < last_scroll_top) {
+                    $('.smart-scroll-navbar').removeClass('scrolled-down-navbar').addClass('scrolled-up-navbar');
+                }
+                else {
+                    $('.smart-scroll-navbar').removeClass('scrolled-up-navbar').addClass('scrolled-down-navbar');
+
+
+                }
+                last_scroll_top_navbar = scroll_top;
+            });
+        }
+        function popout(text, time) {
+            time = Number(time);
+            $(".popout").html(text);
+            $(".popout").removeClass("hide").addClass("show");
+            setTimeout(() => {
+                $(".popout").removeClass("show").addClass("hide");
+            }, time * 1000);
+        }
+
+    </script>
+</asp:Content>
+

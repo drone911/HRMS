@@ -139,7 +139,7 @@ public partial class HRRegistration : System.Web.UI.Page
                 {
                     extension = ".pdf";
                 }
-                string fileName = Request.Cookies["email"].Value.Replace('.', '_') + "_EmployementVerificationCertificate";
+                string fileName = Util.GetEmail(Request).Replace('.', '_') + "_EmployementVerificationCertificate";
                 string file = Server.MapPath("~/Uploads/hr/" + fileName);
                 if (File.Exists(file + ".pdf"))
                 {
@@ -185,7 +185,7 @@ public partial class HRRegistration : System.Web.UI.Page
                 {
                     extension = ".pdf";
                 }
-                string fileName = Request.Cookies.Get("email").Value.Replace('.', '_') + "_GSTRegistrationCertificate";
+                string fileName = Util.GetEmail(Request).Replace('.', '_') + "_GSTRegistrationCertificate";
                 string file = Server.MapPath("~/Uploads/hr/" + fileName);
                 if (File.Exists(file + ".pdf"))
                 {

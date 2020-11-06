@@ -71,12 +71,12 @@ public partial class HRMarkAttendance : System.Web.UI.Page
 
             TableCell cell = new TableCell();
 
-            nameLabel.Text = dataTable.Rows[i]["firstName"] + " " + dataTable.Rows[i]["lastName"];
+            nameLabel.Text = Util.CapFirstLetter(dataTable.Rows[i]["firstName"].ToString()) + " " + Util.CapFirstLetter(dataTable.Rows[i]["lastName"].ToString());
             cell.Controls.Add(nameLabel);
             tableRow.Cells.Add(cell);
 
             Label positionLabel = new Label();
-            positionLabel.Text = dataTable.Rows[i]["organisationRole"].ToString();
+            positionLabel.Text = Util.CapFirstLetter(dataTable.Rows[i]["organisationRole"].ToString());
             positionCell.Controls.Add(positionLabel);
             tableRow.Cells.Add(positionCell);
 

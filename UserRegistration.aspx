@@ -15,7 +15,7 @@
                 <div class="form-group">
                     <label class="col-form-label" for="MobileNumberInput">Mobile Number</label>
                     <asp:TextBox runat="server" TextMode="Phone" CssClass="form-control" ID="MobileNumberInput" ValidationGroup="vg" required />
-                    <asp:RegularExpressionValidator runat="server" CssClass="invalid-input" ErrorMessage="*Enter a valid number" ControlToValidate="MobileNumberInput" ValidationExpression="^[0-9]{10}$" ValidationGroup="vg"></asp:RegularExpressionValidator>
+                    <asp:RegularExpressionValidator Display="Dynamic" runat="server" CssClass="invalid-input" ErrorMessage="*Enter a valid number" ControlToValidate="MobileNumberInput" ValidationExpression="^[0-9]{10}$" ValidationGroup="vg"></asp:RegularExpressionValidator>
 
                 </div>
                 <div class="form-group">

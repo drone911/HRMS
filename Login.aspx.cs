@@ -18,17 +18,19 @@ public partial class Login : System.Web.UI.Page
         cn = new SqlConnection();
         cn.ConnectionString = ConfigurationManager.ConnectionStrings["DatabaseConnectionString"].ToString();
         cn.Open();
-        HttpCookie emailCookie = new HttpCookie("email", "");
+        Response.Cookies["email"].Value = "";
         Response.Cookies["role"].Value = "";
         Response.Cookies["registered"].Value = "";
         Response.Cookies["verified"].Value = "";
+        Response.Cookies.Remove("profileURL");
+
     }
     protected void LoginButton_Click(object sender, EventArgs e)
     {
         if (cn.State.ToString() == "Open")
         {
             string email = EmailInput.Text.Trim().ToLower();
-            SqlCommand cmd = new SqlCommand("select hashedPassword, salt, isEmailVerified, role, isFullyRegistered from [User] where email=@email", cn);
+            SqlCommand cmd = new SqlCommand("select hashedPassword, salt, isEmailVerified, role, isFullyRegistered,profilepicture from [User] where email=@email", cn);
 
             cmd.Parameters.AddWithValue("email", email);
 
@@ -45,8 +47,11 @@ public partial class Login : System.Web.UI.Page
                     if ((bool)dt.Rows[0]["isEmailVerified"])
                     {
                         string role = dt.Rows[0]["role"].ToString();
+                        string profileURL = "~/Uploads/ProfilePictures/" + dt.Rows[0]["profilepicture"].ToString();
                         Response.Cookies.Add(new HttpCookie("email", email));
                         Response.Cookies.Add(new HttpCookie("role", role));
+                        Response.Cookies.Add(new HttpCookie("profileURL", profileURL));
+
                         if ((bool)dt.Rows[0]["isFullyRegistered"])
                         {
                             Response.Cookies.Add(new HttpCookie("registered", "True"));
@@ -60,6 +65,7 @@ public partial class Login : System.Web.UI.Page
                             Response.Cookies["email"].Expires.AddDays(30);
                             Response.Cookies["role"].Expires.AddDays(30);
                             Response.Cookies["registered"].Expires.AddDays(30);
+                            Response.Cookies["profileURL"].Expires.AddDays(30);
                         }
                         
 
@@ -73,23 +79,35 @@ public partial class Login : System.Web.UI.Page
                                 DataTable verificationDataTable = new DataTable();
                                 adapter.Fill(verificationDataTable);
                                 Response.Cookies.Add(new HttpCookie("verified", ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString()));
-                                // string uo = ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString();
                                 if (SavePasswordCheckbox.Checked) {
                                     Response.Cookies["verified"].Expires.AddDays(30);
                                 }
                                 Response.Redirect("~/HRProfile.aspx");
-                                Response.End();
                             }
                             else
                             {
                                 Response.Redirect("~/HRRegistration.aspx");
-                                Response.End();
                             }
                         }
                         if(role == "simpleuser")
                         {
                             Response.Redirect("~/UserProfile.aspx");
 
+                        }
+                        if (role == "moderator")
+                        {
+                            SqlCommand selectVerification = new SqlCommand("select isVerified from [Moderator] where email=@email", cn);
+                            selectVerification.Parameters.AddWithValue("email", email);
+                            SqlDataAdapter adapter = new SqlDataAdapter(selectVerification);
+                            DataTable verificationDataTable = new DataTable();
+                            adapter.Fill(verificationDataTable);
+                            Response.Cookies.Add(new HttpCookie("verified", ((bool)verificationDataTable.Rows[0]["isVerified"]).ToString()));
+                            if (SavePasswordCheckbox.Checked)
+                            {
+                                Response.Cookies["verified"].Expires.AddDays(30);
+                            }
+
+                            Response.Redirect("~/ModeratorProfile.aspx");
                         }
                     }
                     else

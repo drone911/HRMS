@@ -16,7 +16,7 @@
         <hr />
          <input class="form-control col-3" autocomplete="off" id="search" type="text" placeholder="Search here,.." />
         <br />
-        <asp:Table ID="EmployeeTable" runat="server" CssClass="table table-bordered table-sm" CellSpacing="0" Width="100%">
+        <asp:Table ID="EmployeeTable" runat="server" CssClass="table" CellSpacing="0" Width="100%">
             
         </asp:Table>
     </div>
